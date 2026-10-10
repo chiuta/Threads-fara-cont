@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Threads fără cont</title>
+<meta name="description" content="Vizualizator de postări publice Threads, fără cont, prin embed-ul oficial Meta. 7 limbi. Fără analitice; conținutul embed se încarcă de la Meta.">
+<meta name="theme-color" content="#0F0E0D">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' https://www.threads.net https://www.threads.com; style-src 'unsafe-inline'; img-src data: https:; font-src https:; media-src https:; connect-src https:; frame-src https://www.threads.net https://www.threads.com https://*.threads.net https://*.threads.com; base-uri 'none'; form-action 'none'">
+<!--
+  Threads fără cont — vizualizator de postări publice, fără autentificare, în 7 limbi
+  (RO/EN/FR/IT/ES/PT/DE). Folosește API-ul oEmbed oficial al Meta
+  (graph.threads.net/v1.0/oembed), anunțat de Meta ca fiind fără token din 15 iunie 2026 (blogul Meta, 15.06.2026; neverificat independent pe termeni/limite). Nu scrapuiește
+  profiluri: Meta nu oferă un API public pentru listarea automată a postărilor unui profil,
+  iar termenii oEmbed permit DOAR afișarea unei postări, nu extragerea/persistarea
+  conținutului ei. De aceea firul se construiește manual, din link-uri individuale de
+  postări (copiate din threads.com, accesibil fără cont pentru conținut public).
+  SECURITATE: răspunsul oEmbed (și al unui eventual proxy) este tratat ca nesigur: se
+  parsează cu DOMParser și se reconstruiește doar un blockquote.text-post-media curat
+  (a[href] doar către threads.net/.com). Scriptul embed.js este cod terț al Meta, încărcat
+  din adresa fixă din cod, niciodată din răspuns.
+-->
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0F0E0D;
+    --surface: #1A1816;
+    --surface-2: #221F1C;
+    --text: #F2EFE9;
+    --muted: #8C8579;
+    --accent: #C9A15A;
+    --accent-hover: #DCB46E;
+    --accent-dim: #7A6640;
+    --border: #2A2724;
+    --danger: #C97A5A;
+    --radius: 14px;
+    --serif: ui-serif, Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 640px; margin: 0 auto; padding: 40px 20px 80px; }
+
+  .headerRow { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+  .headerText { min-width: 0; }
+
+  header h1 {
+    font-family: var(--serif);
+    font-size: clamp(28px, 6vw, 40px);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+  }
+  header h1 em { color: var(--accent); font-style: italic; }
+  .lede { color: var(--muted); margin: 0 0 32px; max-width: 46ch; }
+
+  .langSelect {
+    flex-shrink: 0;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-family: var(--sans);
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .composer { margin-bottom: 40px; }
+  .row { display: flex; gap: 8px; }
+  input[type="text"] {
+    flex: 1;
+    min-width: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-family: var(--mono);
+    font-size: 14px;
+  }
+  input[type="text"]::placeholder { color: #9A8456; }
+  input[type="text"]:focus-visible, button:focus-visible, select:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  button {
+    background: var(--accent);
+    color: #1A1508;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--sans);
+    white-space: nowrap;
+  }
+  button:hover { background: var(--accent-hover); }
+
+  .msg { min-height: 20px; margin-top: 8px; font-size: 13px; color: var(--muted); }
+  .msg.error { color: var(--danger); }
+
+  details.advanced { margin-top: 14px; }
+  details.advanced summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+  details.advanced summary::marker { color: var(--accent); }
+  .advRow { margin-top: 10px; }
+  .advRow label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .advRow input { width: 100%; }
+  .hint { font-size: 12px; color: var(--muted); margin: 6px 0 0; }
+
+  /* firul — elementul de semnătură al paginii */
+  .thread { position: relative; padding-left: 28px; min-height: 60px; }
+  .thread::before {
+    content: '';
+    position: absolute;
+    left: 9px;
+    top: 6px;
+    bottom: 6px;
+    width: 1px;
+    background-image: repeating-linear-gradient(to bottom, var(--accent-dim) 0 6px, transparent 6px 12px);
+  }
+
+  .card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    padding: 4px;
+    animation: appear .25s ease;
+  }
+  .knot {
+    position: absolute;
+    left: -28px;
+    top: 18px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--bg);
+  }
+  .cardBody { padding: 14px; min-height: 40px; overflow-x: auto; }
+  .cardBody iframe { max-width: 100%; }
+  .cardBody blockquote { margin: 0; }
+  #privacyNoteEl { margin: 10px 0 0; }
+  .cardStatus { color: var(--muted); font-size: 13px; margin: 0; }
+  .cardStatus.error { color: var(--danger); }
+  .cardUrl { font-family: var(--mono); font-size: 12px; color: var(--muted); word-break: break-all; margin: 4px 0 0; }
+  .card.failed { border-color: var(--danger); }
+
+  .remove {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: transparent;
+    color: var(--muted);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+  }
+  .remove:hover { background: var(--surface-2); color: var(--text); }
+  .card.removing { animation: disappear .18s ease forwards; }
+
+  @keyframes appear { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  @keyframes disappear { to { opacity: 0; transform: scale(.96); } }
+  @media (prefers-reduced-motion: reduce) {
+    .card, .card.removing { animation: none; }
+  }
+
+  .empty { padding: 20px 0 20px 4px; }
+  .empty p { margin: 0 0 6px; }
+  .empty .muted { color: var(--muted); font-size: 14px; }
+
+  .tools { display: flex; gap: 10px; margin: 32px 0 8px; flex-wrap: wrap; }
+  .tools button { background: var(--surface); color: var(--text); border: 1px solid var(--border); font-weight: 500; }
+  .tools button:hover { background: var(--surface-2); }
+
+  textarea#ioArea {
+    width: 100%;
+    min-height: 120px;
+    margin-top: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 12px;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .ioActions { display: flex; gap: 8px; margin-top: 8px; }
+  .hidden { display: none !important; }
+
+  footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 420px) {
+    .row { flex-direction: column; }
+    .row button { width: 100%; }
+    .headerRow { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<noscript>Acest instrument necesită JavaScript activat. / This tool requires JavaScript to be enabled.</noscript>
+
+<div class="wrap">
+  <header class="headerRow">
+    <div class="headerText">
+      <h1>Threads <em id="h1Suffix">fără cont</em></h1>
+      <p class="lede" id="ledeEl">Adună link-uri către postări publice de pe Threads și vezi-le redate curat — prin embed-ul oficial Meta, fără să ai nevoie de cont.</p>
+    </div>
+    <select id="langSelect" class="langSelect" aria-label="Limbă">
+      <option value="ro">Română</option>
+      <option value="en">English</option>
+      <option value="fr">Français</option>
+      <option value="it">Italiano</option>
+      <option value="es">Español</option>
+      <option value="pt">Português</option>
+      <option value="de">Deutsch</option>
+    </select>
+  </header>
+
+  <section class="composer">
+    <div class="row">
+      <input id="urlInput" type="text" placeholder="https://www.threads.com/@utilizator/post/COD" aria-label="Link postare Threads">
+      <button id="addBtn" type="button">Adaugă</button>
+    </div>
+    <div id="msg" class="msg" role="status" aria-live="polite"></div>
+    <details class="advanced">
+      <summary id="advancedSummaryEl">Setări avansate</summary>
+      <div class="advRow">
+        <label for="proxyInput" id="proxyLabelEl">Proxy CORS (opțional)</label>
+        <input id="proxyInput" type="text" placeholder="ex: https://corsproxy.io/?url=">
+        <p class="hint" id="proxyHintEl">Completează doar dacă browserul blochează cererea directă către graph.threads.net (eroare de rețea/CORS). Trebuie să fie un URL https://. Proxy-ul vede adresa ta IP, link-urile postărilor pe care le adaugi și răspunsurile; răspunsul lui este tratat ca nesigur (se păstrează doar structura postării, fără script). Pentru mai multă siguranță, folosește un proxy propriu.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="thread" id="thread" aria-label="Firul tău de postări">
+    <div class="empty" id="emptyState">
+      <p id="emptyTitleEl">Firul tău e gol.</p>
+      <p class="muted" id="emptyBodyEl">Adaugă mai sus link-ul unei postări publice — îl poți copia direct de pe threads.com, fără autentificare.</p>
+    </div>
+  </section>
+
+  <section class="tools">
+    <button id="exportBtn" type="button">Exportă lista</button>
+    <button id="importBtn" type="button">Importă lista</button>
+  </section>
+  <textarea id="ioArea" class="hidden" placeholder="un link pe linie" aria-label="Import/export linkuri"></textarea>
+  <div class="ioActions hidden" id="ioActions">
+    <button id="ioConfirm" type="button">Confirmă import</button>
+    <button id="ioCancel" type="button">Renunță</button>
+  </div>
+
+  <footer>
+    <p id="footerTextEl">Acest instrument afișează postări Threads individuale prin API-ul oEmbed oficial al Meta (fără token din 15 iunie 2026, conform anunțului Meta la data scrierii; verifică documentația Meta — limitele și condițiile pot diferi). Meta nu oferă acces public pentru a lista automat toate postările unui profil, iar termenii oEmbed permit doar afișarea unei postări — nu extragerea sau păstrarea conținutului ei. De aceea firul se construiește manual: răsfoiește threads.com (funcționează fără cont pentru postări publice), copiază link-ul fiecărei postări și adaug-o mai sus.</p>
+    <p id="privacyNoteEl">Fără cont ≠ fără urmărire. Link-ul postării este trimis la Meta (graph.threads.net), direct sau prin proxy-ul tău, iar postarea afișată este încărcată de la Meta prin scriptul lor embed.js (cod extern, controlat de Meta): Meta vede adresa ta IP și ce postări vizualizezi. Instrumentul nu are analitice și nu stochează nimic — lista există doar în memoria filei, o salvezi tu prin export. Folosește embed-urile doar pentru afișare, conform termenilor Meta.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  const LANGS = ['ro', 'en', 'fr', 'it', 'es', 'pt', 'de'];
+
+  const I18N = {
+    ro: {
+      pageTitle: `Threads fără cont`,
+      h1Suffix: `fără cont`,
+      lede: `Adună link-uri către postări publice de pe Threads și vezi-le redate curat — prin embed-ul oficial Meta, fără să ai nevoie de cont.`,
+      inputPlaceholder: `https://www.threads.com/@utilizator/post/COD`,
+      inputAriaLabel: `Link postare Threads`,
+      addBtn: `Adaugă`,
+      advancedSummary: `Setări avansate`,
+      proxyLabel: `Proxy CORS (opțional)`,
+      proxyPlaceholder: `ex: https://corsproxy.io/?url=`,
+      proxyHint: `Completează doar dacă browserul blochează cererea directă către graph.threads.net (eroare de rețea/CORS). Trebuie să fie un URL https://. Proxy-ul vede adresa ta IP, link-urile postărilor pe care le adaugi și răspunsurile; răspunsul lui este tratat ca nesigur (se păstrează doar structura postării, fără script). Pentru mai multă siguranță, folosește un proxy propriu.`,
+      threadAriaLabel: `Firul tău de postări`,
+      emptyTitle: `Firul tău e gol.`,
+      emptyBody: `Adaugă mai sus link-ul unei postări publice — îl poți copia direct de pe threads.com, fără autentificare.`,
+      exportBtn: `Exportă lista`,
+      importBtn: `Importă lista`,
+      ioAreaPlaceholder: `un link pe linie`,
+      ioAreaAriaLabel: `Import/export linkuri`,
+      ioConfirmBtn: `Confirmă import`,
+      ioCancelBtn: `Renunță`,
+      footerText: `Acest instrument afișează postări Threads individuale prin API-ul oEmbed oficial al Meta (fără token din 15 iunie 2026, conform anunțului Meta la data scrierii; verifică documentația Meta — limitele și condițiile pot diferi). Meta nu oferă acces public pentru a lista automat toate postările unui profil, iar termenii oEmbed permit doar afișarea unei postări — nu extragerea sau păstrarea conținutului ei. De aceea firul se construiește manual: răsfoiește threads.com (funcționează fără cont pentru postări publice), copiază link-ul fiecărei postări și adaug-o mai sus.`,
+      privacyNote: `Fără cont ≠ fără urmărire. Link-ul postării este trimis la Meta (graph.threads.net), direct sau prin proxy-ul tău, iar postarea afișată este încărcată de la Meta prin scriptul lor embed.js (cod extern, controlat de Meta): Meta vede adresa ta IP și ce postări vizualizezi. Instrumentul nu are analitice și nu stochează nimic — lista există doar în memoria filei, o salvezi tu prin export. Folosește embed-urile doar pentru afișare, conform termenilor Meta.`,
+      badProxyMsg: `Proxy invalid: trebuie să fie un URL https:// valid, fără utilizator/parolă.`,
+      tooManyMsg: `Prea multe postări în fir (maxim 100).`,
+      importTruncMsg: `Import limitat la 50 de linii; restul au fost ignorate.`,
+      timeoutHint: `Cererea a depășit 15 secunde. Reîncearcă sau verifică proxy-ul.`,
+      langSelectLabel: `Limbă`,
+      cardLoading: `Se încarcă postarea…`,
+      loadingShort: `Se încarcă…`,
+      invalidLinkMsg: `Link nerecunoscut. Exemple valide: https://www.threads.com/@nume/post/COD sau https://www.threads.com/t/COD`,
+      duplicateMsg: `Postarea este deja în fir.`,
+      emptyResponseMsg: `Răspuns gol de la Threads.`,
+      loadFailedTitle: `Nu s-a putut încărca postarea.`,
+      corsHint: `Motiv probabil: browserul a blocat cererea directă (CORS). Deschide "Setări avansate" și completează un proxy.`,
+      otherHint: `Postarea poate fi privată, restricționată de vârstă, geo-blocată, sau linkul nu este valid.`,
+      removeLabel: `Elimină din fir`,
+      importDoneMsg: function (ok, total) { return `Import finalizat: ${ok} din ${total} link-uri adăugate.`; }
+    },
+    en: {
+      pageTitle: `Threads without an account`,
+      h1Suffix: `without an account`,
+      lede: `Collect links to public Threads posts and view them cleanly rendered — through Meta's official embed, no account needed.`,
+      inputPlaceholder: `https://www.threads.com/@username/post/CODE`,
+      inputAriaLabel: `Threads post link`,
+      addBtn: `Add`,
+      advancedSummary: `Advanced settings`,
+      proxyLabel: `CORS proxy (optional)`,
+      proxyPlaceholder: `e.g. https://corsproxy.io/?url=`,
+      proxyHint: `Fill this in only if your browser blocks the direct request to graph.threads.net (network/CORS error). It must be an https:// URL. The proxy sees your IP address, the links of the posts you add, and the responses; its response is treated as untrusted (only the post structure is kept, no scripts). For more privacy, use your own proxy.`,
+      threadAriaLabel: `Your thread of posts`,
+      emptyTitle: `Your thread is empty.`,
+      emptyBody: `Add the link to a public post above — you can copy it straight from threads.com, no login needed.`,
+      exportBtn: `Export list`,
+      importBtn: `Import list`,
+      ioAreaPlaceholder: `one link per line`,
+      ioAreaAriaLabel: `Import/export links`,
+      ioConfirmBtn: `Confirm import`,
+      ioCancelBtn: `Cancel`,
+      footerText: `This tool displays individual Threads posts through Meta's official oEmbed API (token-free since 15 June 2026 per Meta's announcement at the time of writing; check Meta's current documentation — limits and terms may differ). Meta doesn't provide public access to automatically list all of a profile's posts, and the oEmbed terms allow only displaying a post — not extracting or storing its content. That's why the thread is built manually: browse threads.com (public posts are viewable without an account), copy the link to each post, and add it above.`,
+      privacyNote: `No account ≠ no tracking. The post link is sent to Meta (graph.threads.net), directly or via your proxy, and the displayed post is loaded from Meta through their embed.js script (third-party code controlled by Meta): Meta sees your IP address and which posts you view. This tool has no analytics and stores nothing — the list lives only in the tab's memory; you save it yourself by exporting. Use the embeds for display only, as Meta's terms require.`,
+      badProxyMsg: `Invalid proxy: it must be a valid https:// URL without username/password.`,
+      tooManyMsg: `Too many posts in the thread (maximum 100).`,
+      importTruncMsg: `Import limited to 50 lines; the rest were ignored.`,
+      timeoutHint: `The request took longer than 15 seconds. Try again or check your proxy.`,
+      langSelectLabel: `Language`,
+      cardLoading: `Loading post…`,
+      loadingShort: `Loading…`,
+      invalidLinkMsg: `Unrecognised link. Valid examples: https://www.threads.com/@name/post/CODE or https://www.threads.com/t/CODE`,
+      duplicateMsg: `This post is already in the thread.`,
+      emptyResponseMsg: `Empty response from Threads.`,
+      loadFailedTitle: `Couldn't load the post.`,
+      corsHint: `Likely reason: your browser blocked the direct request (CORS). Open "Advanced settings" and fill in a proxy.`,
+      otherHint: `The post may be private, age-restricted, geo-blocked, or the link isn't valid.`,
+      removeLabel: `Remove from thread`,
+      importDoneMsg: function (ok, total) { return `Import complete: ${ok} of ${total} links added.`; }
+    },
+    fr: {
+      pageTitle: `Threads sans compte`,
+      h1Suffix: `sans compte`,
+      lede: `Rassemblez des liens vers des publications Threads publiques et affichez-les proprement — via l'intégration officielle de Meta, sans avoir besoin de compte.`,
+      inputPlaceholder: `https://www.threads.com/@utilisateur/post/CODE`,
+      inputAriaLabel: `Lien d'une publication Threads`,
+      addBtn: `Ajouter`,
+      advancedSummary: `Paramètres avancés`,
+      proxyLabel: `Proxy CORS (facultatif)`,
+      proxyPlaceholder: `ex. https://corsproxy.io/?url=`,
+      proxyHint: `À remplir uniquement si votre navigateur bloque la requête directe vers graph.threads.net (erreur réseau/CORS). Ce doit être une URL https://. Le proxy voit votre adresse IP, les liens des publications que vous ajoutez et les réponses ; sa réponse est traitée comme non fiable (seule la structure de la publication est conservée, sans script). Pour plus de confidentialité, utilisez votre propre proxy.`,
+      threadAriaLabel: `Votre fil de publications`,
+      emptyTitle: `Votre fil est vide.`,
+      emptyBody: `Ajoutez ci-dessus le lien d'une publication publique — vous pouvez le copier directement depuis threads.com, sans vous connecter.`,
+      exportBtn: `Exporter la liste`,
+      importBtn: `Importer une liste`,
+      ioAreaPlaceholder: `un lien par ligne`,
+      ioAreaAriaLabel: `Importer/exporter des liens`,
+      ioConfirmBtn: `Confirmer l'import`,
+      ioCancelBtn: `Annuler`,
+      footerText: `Cet outil affiche des publications Threads individuelles via l'API oEmbed officielle de Meta (sans jeton depuis le 15 juin 2026 d'après l'annonce de Meta à la date de rédaction ; vérifiez la documentation de Meta — limites et conditions peuvent différer). Meta ne propose pas d'accès public pour lister automatiquement toutes les publications d'un profil, et les conditions d'oEmbed autorisent uniquement l'affichage d'une publication — pas l'extraction ni la conservation de son contenu. C'est pourquoi le fil se construit manuellement : parcourez threads.com (les publications publiques sont visibles sans compte), copiez le lien de chaque publication, puis ajoutez-le ci-dessus.`,
+      privacyNote: `Sans compte ≠ sans traçage. Le lien de la publication est envoyé à Meta (graph.threads.net), directement ou via votre proxy, et la publication affichée est chargée depuis Meta par leur script embed.js (code tiers contrôlé par Meta) : Meta voit votre adresse IP et les publications que vous consultez. Cet outil n'a pas d'analytique et ne stocke rien — la liste n'existe que dans la mémoire de l'onglet, vous la sauvegardez par export. N'utilisez les intégrations que pour l'affichage, conformément aux conditions de Meta.`,
+      badProxyMsg: `Proxy invalide : il doit s'agir d'une URL https:// valide, sans identifiant/mot de passe.`,
+      tooManyMsg: `Trop de publications dans le fil (maximum 100).`,
+      importTruncMsg: `Import limité à 50 lignes ; le reste a été ignoré.`,
+      timeoutHint: `La requête a dépassé 15 secondes. Réessayez ou vérifiez votre proxy.`,
+      langSelectLabel: `Langue`,
+      cardLoading: `Chargement de la publication…`,
+      loadingShort: `Chargement…`,
+      invalidLinkMsg: `Lien non reconnu. Exemples valides : https://www.threads.com/@nom/post/CODE ou https://www.threads.com/t/CODE`,
+      duplicateMsg: `Cette publication est déjà dans le fil.`,
+      emptyResponseMsg: `Réponse vide de Threads.`,
+      loadFailedTitle: `Impossible de charger la publication.`,
+      corsHint: `Cause probable : le navigateur a bloqué la requête directe (CORS). Ouvrez "Paramètres avancés" et renseignez un proxy.`,
+      otherHint: `La publication est peut-être privée, soumise à une restriction d'âge, géobloquée, ou le lien n'est pas valide.`,
+      removeLabel: `Retirer du fil`,
+      importDoneMsg: function (ok, total) { return `Import terminé : ${ok} lien(s) sur ${total} ajouté(s).`; }
+    },
+    it: {
+      pageTitle: `Threads senza account`,
+      h1Suffix: `senza account`,
+      lede: `Raccogli link a post pubblici di Threads e visualizzali in modo pulito — tramite l'embed ufficiale di Meta, senza bisogno di un account.`,
+      inputPlaceholder: `https://www.threads.com/@utente/post/CODICE`,
+      inputAriaLabel: `Link al post Threads`,
+      addBtn: `Aggiungi`,
+      advancedSummary: `Impostazioni avanzate`,
+      proxyLabel: `Proxy CORS (facoltativo)`,
+      proxyPlaceholder: `es. https://corsproxy.io/?url=`,
+      proxyHint: `Da compilare solo se il browser blocca la richiesta diretta a graph.threads.net (errore di rete/CORS). Deve essere un URL https://. Il proxy vede il tuo indirizzo IP, i link dei post che aggiungi e le risposte; la sua risposta è trattata come non attendibile (si conserva solo la struttura del post, senza script). Per maggiore riservatezza, usa un proxy tuo.`,
+      threadAriaLabel: `Il tuo filo di post`,
+      emptyTitle: `Il tuo filo è vuoto.`,
+      emptyBody: `Aggiungi qui sopra il link di un post pubblico — puoi copiarlo direttamente da threads.com, senza accedere.`,
+      exportBtn: `Esporta lista`,
+      importBtn: `Importa lista`,
+      ioAreaPlaceholder: `un link per riga`,
+      ioAreaAriaLabel: `Importa/esporta link`,
+      ioConfirmBtn: `Conferma import`,
+      ioCancelBtn: `Annulla`,
+      footerText: `Questo strumento mostra singoli post di Threads tramite l'API oEmbed ufficiale di Meta (senza token dal 15 giugno 2026 secondo l'annuncio di Meta al momento della stesura; verifica la documentazione di Meta — limiti e condizioni possono variare). Meta non offre un accesso pubblico per elencare automaticamente tutti i post di un profilo, e i termini di oEmbed permettono solo di mostrare un post — non di estrarne o conservarne il contenuto. Per questo il filo si costruisce manualmente: naviga su threads.com (i post pubblici si vedono senza account), copia il link di ogni post e aggiungilo qui sopra.`,
+      privacyNote: `Senza account ≠ senza tracciamento. Il link del post viene inviato a Meta (graph.threads.net), direttamente o tramite il tuo proxy, e il post mostrato viene caricato da Meta con il loro script embed.js (codice di terzi controllato da Meta): Meta vede il tuo indirizzo IP e quali post visualizzi. Lo strumento non ha analitiche e non salva nulla — l'elenco esiste solo nella memoria della scheda, lo salvi tu con l'esportazione. Usa gli embed solo per la visualizzazione, come richiesto dai termini di Meta.`,
+      badProxyMsg: `Proxy non valido: deve essere un URL https:// valido, senza nome utente/password.`,
+      tooManyMsg: `Troppi post nel filo (massimo 100).`,
+      importTruncMsg: `Importazione limitata a 50 righe; il resto è stato ignorato.`,
+      timeoutHint: `La richiesta ha superato i 15 secondi. Riprova o controlla il proxy.`,
+      langSelectLabel: `Lingua`,
+      cardLoading: `Caricamento del post…`,
+      loadingShort: `Caricamento…`,
+      invalidLinkMsg: `Link non riconosciuto. Esempi validi: https://www.threads.com/@nome/post/CODICE oppure https://www.threads.com/t/CODICE`,
+      duplicateMsg: `Questo post è già nel filo.`,
+      emptyResponseMsg: `Risposta vuota da Threads.`,
+      loadFailedTitle: `Impossibile caricare il post.`,
+      corsHint: `Motivo probabile: il browser ha bloccato la richiesta diretta (CORS). Apri "Impostazioni avanzate" e inserisci un proxy.`,
+      otherHint: `Il post potrebbe essere privato, soggetto a restrizioni di età, bloccato geograficamente, oppure il link non è valido.`,
+      removeLabel: `Rimuovi dal filo`,
+      importDoneMsg: function (ok, total) { return `Importazione completata: ${ok} di ${total} link aggiunti.`; }
+    },
+    es: {
+      pageTitle: `Threads sin cuenta`,
+      h1Suffix: `sin cuenta`,
+      lede: `Reúne enlaces a publicaciones públicas de Threads y visualízalas de forma limpia — mediante la integración oficial de Meta, sin necesidad de cuenta.`,
+      inputPlaceholder: `https://www.threads.com/@usuario/post/CODIGO`,
+      inputAriaLabel: `Enlace de la publicación de Threads`,
+      addBtn: `Añadir`,
+      advancedSummary: `Configuración avanzada`,
+      proxyLabel: `Proxy CORS (opcional)`,
+      proxyPlaceholder: `ej. https://corsproxy.io/?url=`,
+      proxyHint: `Complétalo solo si el navegador bloquea la solicitud directa a graph.threads.net (error de red/CORS). Debe ser una URL https://. El proxy ve tu dirección IP, los enlaces de las publicaciones que añades y las respuestas; su respuesta se trata como no fiable (solo se conserva la estructura de la publicación, sin scripts). Para más privacidad, usa un proxy propio.`,
+      threadAriaLabel: `Tu hilo de publicaciones`,
+      emptyTitle: `Tu hilo está vacío.`,
+      emptyBody: `Añade arriba el enlace de una publicación pública — puedes copiarlo directamente desde threads.com, sin iniciar sesión.`,
+      exportBtn: `Exportar lista`,
+      importBtn: `Importar lista`,
+      ioAreaPlaceholder: `un enlace por línea`,
+      ioAreaAriaLabel: `Importar/exportar enlaces`,
+      ioConfirmBtn: `Confirmar importación`,
+      ioCancelBtn: `Cancelar`,
+      footerText: `Esta herramienta muestra publicaciones individuales de Threads mediante la API oEmbed oficial de Meta (sin token desde el 15 de junio de 2026 según el anuncio de Meta en el momento de escribir esto; consulta la documentación de Meta — los límites y condiciones pueden variar). Meta no ofrece acceso público para listar automáticamente todas las publicaciones de un perfil, y los términos de oEmbed solo permiten mostrar una publicación, no extraer ni conservar su contenido. Por eso el hilo se construye a mano: navega por threads.com (las publicaciones públicas se ven sin cuenta), copia el enlace de cada publicación y añádelo arriba.`,
+      privacyNote: `Sin cuenta ≠ sin rastreo. El enlace de la publicación se envía a Meta (graph.threads.net), directamente o por tu proxy, y la publicación mostrada se carga desde Meta mediante su script embed.js (código de terceros controlado por Meta): Meta ve tu dirección IP y qué publicaciones consultas. La herramienta no tiene analíticas y no guarda nada — la lista solo existe en la memoria de la pestaña; tú la guardas exportándola. Usa los embeds solo para mostrar, como exigen los términos de Meta.`,
+      badProxyMsg: `Proxy no válido: debe ser una URL https:// válida, sin usuario/contraseña.`,
+      tooManyMsg: `Demasiadas publicaciones en el hilo (máximo 100).`,
+      importTruncMsg: `Importación limitada a 50 líneas; el resto se ignoró.`,
+      timeoutHint: `La solicitud superó los 15 segundos. Inténtalo de nuevo o revisa el proxy.`,
+      langSelectLabel: `Idioma`,
+      cardLoading: `Cargando la publicación…`,
+      loadingShort: `Cargando…`,
+      invalidLinkMsg: `Enlace no reconocido. Ejemplos válidos: https://www.threads.com/@nombre/post/CODIGO o https://www.threads.com/t/CODIGO`,
+      duplicateMsg: `Esta publicación ya está en el hilo.`,
+      emptyResponseMsg: `Respuesta vacía de Threads.`,
+      loadFailedTitle: `No se pudo cargar la publicación.`,
+      corsHint: `Motivo probable: el navegador bloqueó la solicitud directa (CORS). Abre "Configuración avanzada" y añade un proxy.`,
+      otherHint: `La publicación puede ser privada, tener restricción de edad, estar bloqueada por región, o el enlace no es válido.`,
+      removeLabel: `Quitar del hilo`,
+      importDoneMsg: function (ok, total) { return `Importación completa: ${ok} de ${total} enlaces añadidos.`; }
+    },
+    pt: {
+      pageTitle: `Threads sem conta`,
+      h1Suffix: `sem conta`,
+      lede: `Reúne links para publicações públicas do Threads e vê-las apresentadas de forma limpa — através da incorporação oficial da Meta, sem precisar de conta.`,
+      inputPlaceholder: `https://www.threads.com/@utilizador/post/CODIGO`,
+      inputAriaLabel: `Link da publicação do Threads`,
+      addBtn: `Adicionar`,
+      advancedSummary: `Definições avançadas`,
+      proxyLabel: `Proxy CORS (opcional)`,
+      proxyPlaceholder: `ex.: https://corsproxy.io/?url=`,
+      proxyHint: `Preenche apenas se o navegador bloquear o pedido direto a graph.threads.net (erro de rede/CORS). Tem de ser um URL https://. O proxy vê o teu endereço IP, os links das publicações que adicionas e as respostas; a resposta dele é tratada como não fiável (só se mantém a estrutura da publicação, sem scripts). Para mais privacidade, usa um proxy próprio.`,
+      threadAriaLabel: `O teu fio de publicações`,
+      emptyTitle: `O teu fio está vazio.`,
+      emptyBody: `Adiciona acima o link de uma publicação pública — podes copiá-lo diretamente do threads.com, sem autenticação.`,
+      exportBtn: `Exportar lista`,
+      importBtn: `Importar lista`,
+      ioAreaPlaceholder: `um link por linha`,
+      ioAreaAriaLabel: `Importar/exportar links`,
+      ioConfirmBtn: `Confirmar importação`,
+      ioCancelBtn: `Cancelar`,
+      footerText: `Esta ferramenta apresenta publicações individuais do Threads através da API oEmbed oficial da Meta (sem token desde 15 de junho de 2026, segundo o anúncio da Meta à data da escrita; confirma a documentação da Meta — limites e condições podem variar). A Meta não disponibiliza acesso público para listar automaticamente todas as publicações de um perfil, e os termos do oEmbed permitem apenas apresentar uma publicação — não extrair nem guardar o seu conteúdo. Por isso o fio constrói-se manualmente: navega no threads.com (as publicações públicas veem-se sem conta), copia o link de cada publicação e adiciona-o acima.`,
+      privacyNote: `Sem conta ≠ sem rastreamento. O link da publicação é enviado à Meta (graph.threads.net), diretamente ou pelo teu proxy, e a publicação mostrada é carregada da Meta através do script embed.js deles (código de terceiros controlado pela Meta): a Meta vê o teu endereço IP e que publicações consultas. A ferramenta não tem análise de utilização e não guarda nada — a lista existe apenas na memória do separador, tu guardas por exportação. Usa os embeds só para apresentação, como exigem os termos da Meta.`,
+      badProxyMsg: `Proxy inválido: tem de ser um URL https:// válido, sem utilizador/palavra-passe.`,
+      tooManyMsg: `Demasiadas publicações no fio (máximo 100).`,
+      importTruncMsg: `Importação limitada a 50 linhas; o resto foi ignorado.`,
+      timeoutHint: `O pedido excedeu 15 segundos. Tenta de novo ou verifica o proxy.`,
+      langSelectLabel: `Idioma`,
+      cardLoading: `A carregar a publicação…`,
+      loadingShort: `A carregar…`,
+      invalidLinkMsg: `Link não reconhecido. Exemplos válidos: https://www.threads.com/@nome/post/CODIGO ou https://www.threads.com/t/CODIGO`,
+      duplicateMsg: `Esta publicação já está no fio.`,
+      emptyResponseMsg: `Resposta vazia do Threads.`,
+      loadFailedTitle: `Não foi possível carregar a publicação.`,
+      corsHint: `Motivo provável: o navegador bloqueou o pedido direto (CORS). Abre "Definições avançadas" e indica um proxy.`,
+      otherHint: `A publicação pode ser privada, ter restrição de idade, estar bloqueada por região, ou o link não é válido.`,
+      removeLabel: `Remover do fio`,
+      importDoneMsg: function (ok, total) { return `Importação concluída: ${ok} de ${total} links adicionados.`; }
+    },
+    de: {
+      pageTitle: `Threads ohne Konto`,
+      h1Suffix: `ohne Konto`,
+      lede: `Sammle Links zu öffentlichen Threads-Beiträgen und sieh sie dir sauber dargestellt an — über die offizielle Einbettung von Meta, ganz ohne Konto.`,
+      inputPlaceholder: `https://www.threads.com/@benutzername/post/CODE`,
+      inputAriaLabel: `Link zum Threads-Beitrag`,
+      addBtn: `Hinzufügen`,
+      advancedSummary: `Erweiterte Einstellungen`,
+      proxyLabel: `CORS-Proxy (optional)`,
+      proxyPlaceholder: `z. B. https://corsproxy.io/?url=`,
+      proxyHint: `Nur ausfüllen, wenn der Browser die direkte Anfrage an graph.threads.net blockiert (Netzwerk-/CORS-Fehler). Muss eine https://-URL sein. Der Proxy sieht deine IP-Adresse, die Links der hinzugefügten Beiträge und die Antworten; seine Antwort gilt als nicht vertrauenswürdig (nur die Beitragsstruktur bleibt erhalten, keine Skripte). Für mehr Privatsphäre lieber einen eigenen Proxy verwenden.`,
+      threadAriaLabel: `Dein Beitragsfaden`,
+      emptyTitle: `Dein Faden ist leer.`,
+      emptyBody: `Füge oben den Link zu einem öffentlichen Beitrag hinzu — du kannst ihn direkt von threads.com kopieren, ganz ohne Anmeldung.`,
+      exportBtn: `Liste exportieren`,
+      importBtn: `Liste importieren`,
+      ioAreaPlaceholder: `ein Link pro Zeile`,
+      ioAreaAriaLabel: `Links importieren/exportieren`,
+      ioConfirmBtn: `Import bestätigen`,
+      ioCancelBtn: `Abbrechen`,
+      footerText: `Dieses Tool zeigt einzelne Threads-Beiträge über die offizielle oEmbed-API von Meta an (seit 15. Juni 2026 ohne Token laut Meta-Ankündigung zum Zeitpunkt des Schreibens; bitte die aktuelle Meta-Dokumentation prüfen — Limits und Bedingungen können abweichen). Meta bietet keinen öffentlichen Zugriff, um automatisch alle Beiträge eines Profils aufzulisten, und die oEmbed-Bedingungen erlauben nur die Anzeige eines Beitrags — nicht das Extrahieren oder Speichern seines Inhalts. Deshalb wird der Faden manuell aufgebaut: threads.com durchstöbern (öffentliche Beiträge sind ohne Konto sichtbar), den Link jedes Beitrags kopieren und oben hinzufügen.`,
+      privacyNote: `Ohne Konto ≠ ohne Tracking. Der Beitragslink wird an Meta (graph.threads.net) gesendet, direkt oder über deinen Proxy, und der angezeigte Beitrag wird über deren Skript embed.js von Meta geladen (Fremdcode unter Kontrolle von Meta): Meta sieht deine IP-Adresse und welche Beiträge du ansiehst. Das Tool hat keine Analytik und speichert nichts — die Liste existiert nur im Speicher des Tabs, das Sichern erledigst du per Export. Nutze die Embeds nur zur Anzeige, wie es die Meta-Bedingungen verlangen.`,
+      badProxyMsg: `Ungültiger Proxy: muss eine gültige https://-URL ohne Benutzername/Passwort sein.`,
+      tooManyMsg: `Zu viele Beiträge im Faden (maximal 100).`,
+      importTruncMsg: `Import auf 50 Zeilen begrenzt; der Rest wurde ignoriert.`,
+      timeoutHint: `Die Anfrage dauerte länger als 15 Sekunden. Erneut versuchen oder Proxy prüfen.`,
+      langSelectLabel: `Sprache`,
+      cardLoading: `Beitrag wird geladen…`,
+      loadingShort: `Wird geladen…`,
+      invalidLinkMsg: `Link nicht erkannt. Gültige Beispiele: https://www.threads.com/@name/post/CODE oder https://www.threads.com/t/CODE`,
+      duplicateMsg: `Dieser Beitrag ist bereits im Faden.`,
+      emptyResponseMsg: `Leere Antwort von Threads.`,
+      loadFailedTitle: `Beitrag konnte nicht geladen werden.`,
+      corsHint: `Wahrscheinlicher Grund: Der Browser hat die direkte Anfrage blockiert (CORS). Öffne "Erweiterte Einstellungen" und trage einen Proxy ein.`,
+      otherHint: `Der Beitrag ist möglicherweise privat, altersbeschränkt, geoblockiert, oder der Link ist ungültig.`,
+      removeLabel: `Aus dem Faden entfernen`,
+      importDoneMsg: function (ok, total) { return `Import abgeschlossen: ${ok} von ${total} Links hinzugefügt.`; }
+    }
+  };
+
+  let currentLang = 'ro';
+  function t(key) {
+    const dict = I18N[currentLang] || I18N.ro;
+    return (key in dict) ? dict[key] : I18N.ro[key];
+  }
+
+  function detectDefaultLang() {
+    const candidates = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || 'ro'];
+    for (let i = 0; i < candidates.length; i++) {
+      const code = String(candidates[i]).slice(0, 2).toLowerCase();
+      if (LANGS.indexOf(code) !== -1) return code;
+    }
+    return 'ro';
+  }
+
+  const state = { posts: [] };
+
+  const threadEl = document.getElementById('thread');
+  const emptyState = document.getElementById('emptyState');
+  const emptyTitleEl = document.getElementById('emptyTitleEl');
+  const emptyBodyEl = document.getElementById('emptyBodyEl');
+  const urlInput = document.getElementById('urlInput');
+  const addBtn = document.getElementById('addBtn');
+  const msgEl = document.getElementById('msg');
+  const proxyInput = document.getElementById('proxyInput');
+  const proxyLabelEl = document.getElementById('proxyLabelEl');
+  const proxyHintEl = document.getElementById('proxyHintEl');
+  const advancedSummaryEl = document.getElementById('advancedSummaryEl');
+  const h1Suffix = document.getElementById('h1Suffix');
+  const ledeEl = document.getElementById('ledeEl');
+  const footerTextEl = document.getElementById('footerTextEl');
+  const privacyNoteEl = document.getElementById('privacyNoteEl');
+  const langSelect = document.getElementById('langSelect');
+  const exportBtn = document.getElementById('exportBtn');
+  const importBtn = document.getElementById('importBtn');
+  const ioArea = document.getElementById('ioArea');
+  const ioActions = document.getElementById('ioActions');
+  const ioConfirm = document.getElementById('ioConfirm');
+  const ioCancel = document.getElementById('ioCancel');
+
+  function setMsg(text, isError) {
+    msgEl.textContent = text || '';
+    msgEl.classList.toggle('error', !!isError);
+  }
+
+  const MAX_POSTS = 100;
+  const MAX_IMPORT_LINES = 50;
+  const FETCH_TIMEOUT_MS = 15000;
+  const MAX_HTML_LEN = 20000;
+  const IMPORT_CONCURRENCY = 4;
+
+  // Link de postare: threads.net / threads.com, @utilizator (litere, cifre, . _) / post / cod, sau /t/cod.
+  const POST_RE = /^https?:\/\/(?:www\.)?threads\.(?:net|com)\/(?:@[A-Za-z0-9._]{1,60}\/post\/[A-Za-z0-9_-]{1,40}|t\/[A-Za-z0-9_-]{1,40})\/?(?:\?[^\s#]*)?$/;
+
+  function validUrl(u) {
+    return typeof u === 'string' && u.length <= 300 && POST_RE.test(u);
+  }
+
+  // cheie de deduplicare: fără schemă, fără www, fără query, fără slash final
+  function dedupeKey(u) {
+    return u.replace(/^https?:\/\/(?:www\.)?threads\.(?:net|com)\//, '').replace(/\?.*$/, '').replace(/\/$/, '');
+  }
+
+  // Proxy CORS: doar https://, fără utilizator/parolă. Returnează URL-ul final sau null dacă proxy-ul e invalid.
+  // Atenție: proxy-ul vede IP-ul tău și link-urile adăugate; răspunsul lui e tratat ca nesigur (vezi sanitizeEmbed).
+  function buildOembedUrl(postUrl) {
+    const base = 'https://graph.threads.net/v1.0/oembed';
+    const qs = new URLSearchParams({ url: postUrl, maxwidth: '550' }).toString();
+    const direct = base + '?' + qs;
+    const proxyTemplate = proxyInput.value.trim();
+    if (!proxyTemplate) return direct;
+    const finalUrl = proxyTemplate.includes('{url}')
+      ? proxyTemplate.split('{url}').join(encodeURIComponent(direct))
+      : proxyTemplate + encodeURIComponent(direct);
+    try {
+      const u = new URL(finalUrl);
+      if (u.protocol !== 'https:' || u.username || u.password) return null;
+      return u.href;
+    } catch (e) { return null; }
+  }
+
+  // Scriptul embed.js este cod terț (Meta). URL fix, hardcodat; nu este niciodată luat din răspunsul oEmbed/proxy.
+  // Se încarcă doar când există cel puțin o postare afișată; la fiecare adăugare se reîncarcă pentru a scana cardurile noi.
+  let embedReloadTimer = null;
+  function scheduleEmbedReload() {
+    clearTimeout(embedReloadTimer);
+    embedReloadTimer = setTimeout(reloadEmbedScript, 150);
+  }
+  function reloadEmbedScript() {
+    const old = document.getElementById('threads-embed-js');
+    if (old) old.remove();
+    if (!state.posts.some(function (p) { return p.status === 'ok'; })) return;
+    const s = document.createElement('script');
+    s.id = 'threads-embed-js';
+    s.async = true;
+    s.src = 'https://www.threads.net/embed.js';
+    s.referrerPolicy = 'strict-origin-when-cross-origin';
+    document.body.appendChild(s);
+  }
+
+  // Sanitizare: HTML-ul din oEmbed (sau de la proxy) NU se injectează ca atare. Se parsează în document inert
+  // (DOMParser nu execută scripturi) și se reconstruiește doar blockquote.text-post-media cu text + a[href]
+  // către threads.net/.com. Fără script, fără on*, fără style, fără javascript:. Returnează element sau null.
+  function safeThreadsHref(h) {
+    try {
+      const u = new URL(h, 'https://www.threads.com/');
+      if (u.protocol !== 'https:' || u.username || u.password) return null;
+      if (!/^(?:www\.)?threads\.(?:net|com)$/.test(u.hostname)) return null;
+      return u.href;
+    } catch (e) { return null; }
+  }
+  const ALLOWED_TAGS = { P: 1, DIV: 1, SPAN: 1, BR: 1, STRONG: 1, EM: 1, B: 1, I: 1, A: 1, TIME: 1 };
+  function cleanNode(src, dst) {
+    src.childNodes.forEach(function (n) {
+      if (n.nodeType === 3) { dst.appendChild(document.createTextNode(n.nodeValue)); return; }
+      if (n.nodeType !== 1) return;
+      const tag = n.tagName.toUpperCase();
+      if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'TEMPLATE' || tag === 'NOSCRIPT') return;
+      if (!ALLOWED_TAGS[tag]) { cleanNode(n, dst); return; }   // tag necunoscut (svg, img, iframe…) → doar textul copiilor, fără el însuși
+      const el = document.createElement(tag.toLowerCase());
+      if (tag === 'A') {
+        const href = safeThreadsHref(n.getAttribute('href') || '');
+        if (!href) { cleanNode(n, dst); return; }
+        el.setAttribute('href', href);
+        el.setAttribute('target', '_blank');
+        el.setAttribute('rel', 'noopener noreferrer');
+      }
+      cleanNode(n, el);
+      dst.appendChild(el);
+    });
+  }
+  function sanitizeEmbed(html) {
+    if (typeof html !== 'string' || !html || html.length > MAX_HTML_LEN) return null;
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const bq = doc.querySelector('blockquote.text-post-media');
+    if (!bq) return null;
+    const permalink = safeThreadsHref(bq.getAttribute('data-text-post-permalink') || '');
+    const out = document.createElement('blockquote');
+    out.className = 'text-post-media';
+    if (permalink) out.setAttribute('data-text-post-permalink', permalink);
+    cleanNode(bq, out);
+    if (!out.textContent.trim() && !out.querySelector('a')) return null;
+    return out;
+  }
+
+  function updateEmptyState() {
+    emptyState.style.display = state.posts.length ? 'none' : '';
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function renderLoadingBody(url) {
+    return '<p class="cardStatus">' + t('cardLoading') + '</p><p class="cardUrl">' + escapeHtml(url) + '</p>';
+  }
+
+  function renderErrorBody(errKind) {
+    if (errKind === 'empty') {
+      return '<p class="cardStatus error">' + t('emptyResponseMsg') + '</p>';
+    }
+    const hint = (errKind === 'cors') ? t('corsHint')
+      : (errKind === 'timeout') ? t('timeoutHint')
+      : (errKind === 'proxy') ? t('badProxyMsg')
+      : t('otherHint');
+    return '<p class="cardStatus error">' + t('loadFailedTitle') + '</p><p class="hint">' + hint + '</p>';
+  }
+
+  function renderPlaceholderCard(postEntry) {
+    const card = document.createElement('article');
+    card.className = 'card loading';
+    card.dataset.id = postEntry.id;
+    card.innerHTML =
+      '<div class="knot" aria-hidden="true"></div>' +
+      '<div class="cardBody">' + renderLoadingBody(postEntry.url) + '</div>' +
+      '<button class="remove" type="button"><span aria-hidden="true">&times;</span></button>';
+    const removeBtn = card.querySelector('.remove');
+    removeBtn.setAttribute('aria-label', t('removeLabel'));
+    removeBtn.setAttribute('title', t('removeLabel'));
+    removeBtn.addEventListener('click', function () { removePost(postEntry.id); });
+    threadEl.appendChild(card);
+    return card;
+  }
+
+  function removePost(id) {
+    const entry = state.posts.find(function (p) { return p.id === id; });
+    if (entry && entry.controller) { try { entry.controller.abort(); } catch (e) {} }
+    if (entry) entry.removed = true;
+    state.posts = state.posts.filter(function (p) { return p.id !== id; });
+    const card = Array.prototype.find.call(threadEl.querySelectorAll('.card'), function (c) { return c.dataset.id === id; });
+    if (card) {
+      card.classList.add('removing');
+      setTimeout(function () { card.remove(); }, 180);
+    }
+    updateEmptyState();
+  }
+
+  function regenerateDynamicChrome() {
+    state.posts.forEach(function (p) {
+      const card = Array.prototype.find.call(threadEl.querySelectorAll('.card'), function (c) { return c.dataset.id === p.id; });
+      if (!card) return;
+      const removeBtn = card.querySelector('.remove');
+      if (removeBtn) {
+        removeBtn.setAttribute('aria-label', t('removeLabel'));
+        removeBtn.setAttribute('title', t('removeLabel'));
+      }
+      if (p.status === 'loading') {
+        card.querySelector('.cardBody').innerHTML = renderLoadingBody(p.url);
+      } else if (p.status === 'error') {
+        card.querySelector('.cardBody').innerHTML = renderErrorBody(p.errKind);
+      }
+    });
+  }
+
+  let idCounter = 0;
+
+  // Pasul 1 (sincron): validează și creează intrarea + cardul-placeholder, în ordinea cerută.
+  // Returnează { entry, card } sau { error: cheie-mesaj }.
+  function createPost(rawUrl) {
+    const url = (rawUrl || '').trim();
+    if (!url) return { error: null };
+    if (!validUrl(url)) return { error: 'invalidLinkMsg' };
+    const key = dedupeKey(url);
+    if (state.posts.some(function (p) { return dedupeKey(p.url) === key; })) return { error: 'duplicateMsg' };
+    if (state.posts.length >= MAX_POSTS) return { error: 'tooManyMsg' };
+    const entry = { id: 'p' + (++idCounter) + '-' + Math.random().toString(36).slice(2, 8), url: url, status: 'loading', errKind: null, controller: null, removed: false };
+    state.posts.push(entry);
+    updateEmptyState();
+    return { entry: entry, card: renderPlaceholderCard(entry) };
+  }
+
+  // Pasul 2 (asincron): cere oEmbed cu timeout, sanitizează, afișează.
+  async function loadPost(entry, card) {
+    const controller = new AbortController();
+    entry.controller = controller;
+    let timedOut = false;
+    const timer = setTimeout(function () { timedOut = true; controller.abort(); }, FETCH_TIMEOUT_MS);
+    function fail(kind) {
+      entry.status = 'error';
+      entry.errKind = kind;
+      card.classList.remove('loading');
+      card.classList.add('failed');
+      card.querySelector('.cardBody').replaceChildren();
+      card.querySelector('.cardBody').innerHTML = renderErrorBody(kind);
+    }
+    try {
+      const reqUrl = buildOembedUrl(entry.url);
+      if (!reqUrl) { fail('proxy'); return; }
+      const res = await fetch(reqUrl, { signal: controller.signal, credentials: 'omit', referrerPolicy: 'no-referrer' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      if (entry.removed) return;
+      const clean = (data && typeof data === 'object') ? sanitizeEmbed(data.html) : null;
+      if (!clean) { fail('empty'); return; }
+      card.classList.remove('loading');
+      entry.status = 'ok';
+      entry.errKind = null;
+      const body = card.querySelector('.cardBody');
+      body.replaceChildren(clean);
+    } catch (err) {
+      if (entry.removed) return;
+      if (timedOut) fail('timeout');
+      else fail((err instanceof TypeError) ? 'cors' : 'other');
+    } finally {
+      clearTimeout(timer);
+      entry.controller = null;
+    }
+    if (!entry.removed) scheduleEmbedReload();
+  }
+
+  function addPost(rawUrl) {
+    const r = createPost(rawUrl);
+    if (!r.entry) {
+      if (r.error) setMsg(t(r.error), true);
+      return false;
+    }
+    setMsg(t('loadingShort'));
+    loadPost(r.entry, r.card).then(function () { setMsg(''); });
+    return true;
+  }
+
+  function applyLanguage(lang) {
+    currentLang = LANGS.indexOf(lang) !== -1 ? lang : 'ro';
+    document.documentElement.lang = currentLang;
+    document.title = t('pageTitle');
+    h1Suffix.textContent = t('h1Suffix');
+    ledeEl.textContent = t('lede');
+    urlInput.placeholder = t('inputPlaceholder');
+    urlInput.setAttribute('aria-label', t('inputAriaLabel'));
+    addBtn.textContent = t('addBtn');
+    advancedSummaryEl.textContent = t('advancedSummary');
+    proxyLabelEl.textContent = t('proxyLabel');
+    proxyInput.placeholder = t('proxyPlaceholder');
+    proxyHintEl.textContent = t('proxyHint');
+    threadEl.setAttribute('aria-label', t('threadAriaLabel'));
+    emptyTitleEl.textContent = t('emptyTitle');
+    emptyBodyEl.textContent = t('emptyBody');
+    exportBtn.textContent = t('exportBtn');
+    importBtn.textContent = t('importBtn');
+    ioArea.placeholder = t('ioAreaPlaceholder');
+    ioArea.setAttribute('aria-label', t('ioAreaAriaLabel'));
+    ioConfirm.textContent = t('ioConfirmBtn');
+    ioCancel.textContent = t('ioCancelBtn');
+    footerTextEl.textContent = t('footerText');
+    privacyNoteEl.textContent = t('privacyNote');
+    langSelect.setAttribute('aria-label', t('langSelectLabel'));
+    langSelect.value = currentLang;
+    regenerateDynamicChrome();
+  }
+
+  function submitInput() {
+    if (addPost(urlInput.value)) urlInput.value = '';   // la link invalid/duplicat textul rămâne pentru corectare
+    urlInput.focus();
+  }
+  addBtn.addEventListener('click', submitInput);
+  urlInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); submitInput(); }
+  });
+  langSelect.addEventListener('change', function () { applyLanguage(this.value); });
+
+  // export / import — singurul mecanism de persistență: userul își salvează
+  // singur lista (fără localStorage, fără server, fără telemetrie).
+  exportBtn.addEventListener('click', function () {
+    ioArea.value = state.posts.map(function (p) { return p.url; }).join('\n');
+    ioArea.classList.remove('hidden');
+    ioActions.classList.add('hidden');
+    ioArea.focus();
+    ioArea.select();
+  });
+
+  importBtn.addEventListener('click', function () {
+    ioArea.value = '';
+    ioArea.classList.remove('hidden');
+    ioActions.classList.remove('hidden');
+    ioArea.focus();
+  });
+
+  ioConfirm.addEventListener('click', async function () {
+    const allLines = ioArea.value.split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
+    const truncated = allLines.length > MAX_IMPORT_LINES;
+    const lines = allLines.slice(0, MAX_IMPORT_LINES);
+    ioArea.classList.add('hidden');
+    ioActions.classList.add('hidden');
+    // cardurile se creează sincron, în ordinea listei; încărcarea rulează cu concurență limitată
+    const jobs = [];
+    lines.forEach(function (line) {
+      const r = createPost(line);
+      if (r.entry) jobs.push(function () { return loadPost(r.entry, r.card); });
+    });
+    setMsg(t('loadingShort'));
+    let next = 0;
+    async function worker() {
+      while (next < jobs.length) { const j = jobs[next++]; await j(); }
+    }
+    const workers = [];
+    for (let i = 0; i < IMPORT_CONCURRENCY; i++) workers.push(worker());
+    await Promise.all(workers);
+    setMsg(t('importDoneMsg')(jobs.length, allLines.length) + (truncated ? ' ' + t('importTruncMsg') : ''));
+  });
+
+  ioCancel.addEventListener('click', function () {
+    ioArea.classList.add('hidden');
+    ioActions.classList.add('hidden');
+  });
+
+  applyLanguage(detectDefaultLang());
+  updateEmptyState();
+})();
+</script>
+</body>
+</html>
