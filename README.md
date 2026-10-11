@@ -20,6 +20,8 @@ Un „fir" construit manual din link-uri către postări Threads publice. Aplica
 - Câmp opțional „Proxy CORS": doar `https://`, fără utilizator/parolă; poate conține `{url}` sau primește URL-ul oEmbed codat la final.
 - Timeout de 15 secunde per cerere, cu mesaje de eroare distincte (CORS/rețea, timeout, proxy invalid, răspuns gol).
 - Răspunsul oEmbed (și al proxy-ului) este tratat ca nesigur: se parsează într-un document inert și se păstrează doar `blockquote.text-post-media` cu text și legături către `threads.net`/`threads.com`; scripturile, atributele `on*`, `style` și URL-urile `javascript:` sunt eliminate.
+- Salvare locală opțională („Ține minte lista în acest browser”, implicit oprită): se păstrează doar linkurile, în `localStorage`; la următoarea vizită apare butonul „Restaurează lista salvată”, fără nicio cerere de rețea până îl apeși. Dezactivarea șterge lista salvată.
+- Export: zona de text are acum butoane „Copiază” și „Descarcă .txt”; cardurile eșuate au buton „Reîncearcă”; stil de tipărire (se tipărește doar firul).
 - Selector de limbă; limba implicită din setările browserului.
 
 ## Manual de utilizare
@@ -35,7 +37,7 @@ Un „fir" construit manual din link-uri către postări Threads publice. Aplica
 
 **Fără cont ≠ fără urmărire.**
 
-- Stocare: aplicația nu folosește `localStorage`, `sessionStorage`, cookie-uri sau IndexedDB. Lista există doar în memoria filei; o salvezi tu prin export.
+- Stocare: implicit aplicația nu folosește `localStorage`, `sessionStorage`, cookie-uri sau IndexedDB; lista există doar în memoria filei și o salvezi tu prin export. Doar dacă bifezi „Ține minte lista în acest browser”, linkurile (nu conținutul postărilor) se scriu în `localStorage` (`tfc_keep`, `tfc_list`) și se șterg la debifare.
 - Gazde contactate, doar când adaugi o postare: `graph.threads.net` (cererea oEmbed; sau proxy-ul pe care îl configurezi tu) și `www.threads.net` (scriptul `embed.js`, cod terț controlat de Meta, încărcat din adresa fixă din cod, niciodată din răspuns). `embed.js` creează apoi iframe-uri către domeniile Threads.
 - Meta vede adresa ta IP, datele browserului și postările pe care le vizualizezi. Un proxy configurat de tine vede IP-ul tău, link-urile adăugate și răspunsurile.
 - Pagina conține o politică CSP (`meta http-equiv`) care limitează scripturile la scriptul propriu (identificat prin hash SHA-256, fără `'unsafe-inline'`) și la `threads.net`/`threads.com` și cadrele la domeniile Threads. Compatibilitatea cu `embed.js` real nu a putut fi testată din mediul de dezvoltare (fără acces la rețea).
@@ -46,7 +48,7 @@ Un „fir" construit manual din link-uri către postări Threads publice. Aplica
 - Afirmația că oEmbed Threads funcționează fără token din 15 iunie 2026 provine din anunțul Meta („Tokenless access to Meta oEmbed APIs", blogul Meta pentru dezvoltatori, 15.06.2026); documentația veche cere încă token, iar limitele și condițiile pot diferi — verifică documentația Meta.
 - Termenii Meta permit embed-ul doar pentru afișare; aplicația nu extrage și nu păstrează conținutul postărilor.
 - Nu poate lista automat postările unui profil (Meta nu oferă acest API public).
-- Dacă închizi sau reîncarci pagina cu postări în fir, browserul cere confirmare (lista nu se salvează; folosește „Exportă lista”).
+- Dacă închizi sau reîncarci pagina cu postări în fir, browserul cere confirmare (lista nu se salvează decât dacă ai bifat salvarea locală; altfel folosește „Exportă lista”).
 - Postările private, restricționate pe vârstă sau geo-blocate nu se afișează.
 - Browserul poate bloca cererea directă (CORS); atunci este nevoie de un proxy, cu implicațiile de confidențialitate de mai sus.
 - Dacă dai de un conținut ilegal sau dăunător, raportează-l la Meta; aplicația nu moderează nimic.
@@ -56,6 +58,9 @@ Un „fir" construit manual din link-uri către postări Threads publice. Aplica
 Descarcă `index.html` și deschide-l în browser. Fără internet nu se poate încărca nicio postare (aplicația există pentru conținut de pe internet); interfața, validarea și importul/exportul funcționează local.
 
 ## Istoric / Changelog
+
+### 11 octombrie 2026 (a doua trecere)
+- Salvare locală opțională a listei de linkuri (implicit oprită) cu restaurare la cerere; export cu „Copiază”/„Descarcă .txt”; „Reîncearcă” pe cardurile eșuate; stil de tipărire; texte noi în toate cele 7 limbi. CSP: hash-ul scriptului recalculat.
 
 ### 11 octombrie 2026
 - Accesibilitate: conținutul este încadrat în `<main>`; axe-core raportează 0 încălcări la 1280 și 360 px.

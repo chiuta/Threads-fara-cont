@@ -6,7 +6,7 @@
 <title>Threads fără cont</title>
 <meta name="description" content="Vizualizator de postări publice Threads, fără cont, prin embed-ul oficial Meta. 7 limbi. Fără analitice; conținutul embed se încarcă de la Meta.">
 <meta name="theme-color" content="#0F0E0D">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-55T7TSCC857PTsSGJZa4QYTItwJiNlI+HF9PFIcrXx0=' https://www.threads.net https://www.threads.com; style-src 'unsafe-inline'; img-src data: https:; font-src https:; media-src https:; connect-src https:; frame-src https://www.threads.net https://www.threads.com https://*.threads.net https://*.threads.com; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src https://www.threads.net https://www.threads.com 'sha256-KmxbBPuoofLUAgmYX/OQk+V680BzfcsgQWv9mzGpln4='; style-src 'unsafe-inline'; img-src data: https:; font-src https:; media-src https:; connect-src https:; frame-src https://www.threads.net https://www.threads.com https://*.threads.net https://*.threads.com; base-uri 'none'; form-action 'none'">
 <!--
   Threads fără cont — vizualizator de postări publice, fără autentificare, în 7 limbi
   (RO/EN/FR/IT/ES/PT/DE). Folosește API-ul oEmbed oficial al Meta
@@ -203,6 +203,18 @@
     font-size: 13px;
   }
   .ioActions { display: flex; gap: 8px; margin-top: 8px; }
+  .keepRow { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+  .keepRow label { display: inline-flex; gap: 8px; align-items: center; cursor: pointer; }
+  .keepRow input { width: 18px; height: 18px; accent-color: var(--accent); }
+  .keepRow button { padding: 8px 14px; background: var(--surface); color: var(--text); border: 1px solid var(--border); font-weight: 500; }
+  .retry { margin-top: 10px; padding: 8px 14px; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); font-weight: 500; }
+  @media print {
+    .composer, .tools, .keepRow, #ioArea, .ioActions, footer, .langSelect, .remove, noscript { display: none !important; }
+    body { background: #fff; color: #000; }
+    .card { border-color: #999; background: #fff; break-inside: avoid; animation: none; }
+    .thread::before, .knot { display: none; }
+    .thread { padding-left: 0; }
+  }
   .hidden { display: none !important; }
 
   footer {
@@ -269,7 +281,16 @@
     <button id="exportBtn" type="button">Exportă lista</button>
     <button id="importBtn" type="button">Importă lista</button>
   </section>
+  <div class="keepRow">
+    <label><input type="checkbox" id="keepChk"> <span id="keepLabelEl">Ține minte lista în acest browser (doar linkurile, local)</span></label>
+    <button id="restoreBtn" type="button" class="hidden">Restaurează lista salvată</button>
+  </div>
   <textarea id="ioArea" class="hidden" placeholder="un link pe linie" aria-label="Import/export linkuri"></textarea>
+  <div class="ioActions hidden" id="ioExportActions">
+    <button id="ioCopy" type="button">Copiază</button>
+    <button id="ioDownload" type="button">Descarcă .txt</button>
+    <button id="ioClose" type="button">Renunță</button>
+  </div>
   <div class="ioActions hidden" id="ioActions">
     <button id="ioConfirm" type="button">Confirmă import</button>
     <button id="ioCancel" type="button">Renunță</button>
@@ -325,6 +346,12 @@
       corsHint: `Motiv probabil: browserul a blocat cererea directă (CORS). Deschide "Setări avansate" și completează un proxy.`,
       otherHint: `Postarea poate fi privată, restricționată de vârstă, geo-blocată, sau linkul nu este valid.`,
       removeLabel: `Elimină din fir`,
+      keepLabel: `Ține minte lista în acest browser (doar linkurile, local)`,
+      restoreBtn: function (n) { return `Restaurează lista salvată (${n})`; },
+      copyBtn: `Copiază`,
+      downloadBtn: `Descarcă .txt`,
+      copiedMsg: `Copiat.`,
+      retryBtn: `Reîncearcă`,
       importDoneMsg: function (ok, total) { return `Import finalizat: ${ok} din ${total} link-uri adăugate.`; }
     },
     en: {
@@ -363,6 +390,12 @@
       corsHint: `Likely reason: your browser blocked the direct request (CORS). Open "Advanced settings" and fill in a proxy.`,
       otherHint: `The post may be private, age-restricted, geo-blocked, or the link isn't valid.`,
       removeLabel: `Remove from thread`,
+      keepLabel: `Remember the list in this browser (links only, local)`,
+      restoreBtn: function (n) { return `Restore saved list (${n})`; },
+      copyBtn: `Copy`,
+      downloadBtn: `Download .txt`,
+      copiedMsg: `Copied.`,
+      retryBtn: `Retry`,
       importDoneMsg: function (ok, total) { return `Import complete: ${ok} of ${total} links added.`; }
     },
     fr: {
@@ -401,6 +434,12 @@
       corsHint: `Cause probable : le navigateur a bloqué la requête directe (CORS). Ouvrez "Paramètres avancés" et renseignez un proxy.`,
       otherHint: `La publication est peut-être privée, soumise à une restriction d'âge, géobloquée, ou le lien n'est pas valide.`,
       removeLabel: `Retirer du fil`,
+      keepLabel: `Mémoriser la liste dans ce navigateur (liens seulement, en local)`,
+      restoreBtn: function (n) { return `Restaurer la liste enregistrée (${n})`; },
+      copyBtn: `Copier`,
+      downloadBtn: `Télécharger .txt`,
+      copiedMsg: `Copié.`,
+      retryBtn: `Réessayer`,
       importDoneMsg: function (ok, total) { return `Import terminé : ${ok} lien(s) sur ${total} ajouté(s).`; }
     },
     it: {
@@ -439,6 +478,12 @@
       corsHint: `Motivo probabile: il browser ha bloccato la richiesta diretta (CORS). Apri "Impostazioni avanzate" e inserisci un proxy.`,
       otherHint: `Il post potrebbe essere privato, soggetto a restrizioni di età, bloccato geograficamente, oppure il link non è valido.`,
       removeLabel: `Rimuovi dal filo`,
+      keepLabel: `Ricorda l'elenco in questo browser (solo i link, in locale)`,
+      restoreBtn: function (n) { return `Ripristina l'elenco salvato (${n})`; },
+      copyBtn: `Copia`,
+      downloadBtn: `Scarica .txt`,
+      copiedMsg: `Copiato.`,
+      retryBtn: `Riprova`,
       importDoneMsg: function (ok, total) { return `Importazione completata: ${ok} di ${total} link aggiunti.`; }
     },
     es: {
@@ -477,6 +522,12 @@
       corsHint: `Motivo probable: el navegador bloqueó la solicitud directa (CORS). Abre "Configuración avanzada" y añade un proxy.`,
       otherHint: `La publicación puede ser privada, tener restricción de edad, estar bloqueada por región, o el enlace no es válido.`,
       removeLabel: `Quitar del hilo`,
+      keepLabel: `Recordar la lista en este navegador (solo los enlaces, en local)`,
+      restoreBtn: function (n) { return `Restaurar la lista guardada (${n})`; },
+      copyBtn: `Copiar`,
+      downloadBtn: `Descargar .txt`,
+      copiedMsg: `Copiado.`,
+      retryBtn: `Reintentar`,
       importDoneMsg: function (ok, total) { return `Importación completa: ${ok} de ${total} enlaces añadidos.`; }
     },
     pt: {
@@ -515,6 +566,12 @@
       corsHint: `Motivo provável: o navegador bloqueou o pedido direto (CORS). Abre "Definições avançadas" e indica um proxy.`,
       otherHint: `A publicação pode ser privada, ter restrição de idade, estar bloqueada por região, ou o link não é válido.`,
       removeLabel: `Remover do fio`,
+      keepLabel: `Lembrar a lista neste navegador (só os links, localmente)`,
+      restoreBtn: function (n) { return `Restaurar a lista guardada (${n})`; },
+      copyBtn: `Copiar`,
+      downloadBtn: `Transferir .txt`,
+      copiedMsg: `Copiado.`,
+      retryBtn: `Tentar novamente`,
       importDoneMsg: function (ok, total) { return `Importação concluída: ${ok} de ${total} links adicionados.`; }
     },
     de: {
@@ -553,6 +610,12 @@
       corsHint: `Wahrscheinlicher Grund: Der Browser hat die direkte Anfrage blockiert (CORS). Öffne "Erweiterte Einstellungen" und trage einen Proxy ein.`,
       otherHint: `Der Beitrag ist möglicherweise privat, altersbeschränkt, geoblockiert, oder der Link ist ungültig.`,
       removeLabel: `Aus dem Faden entfernen`,
+      keepLabel: `Liste in diesem Browser merken (nur Links, lokal)`,
+      restoreBtn: function (n) { return `Gespeicherte Liste wiederherstellen (${n})`; },
+      copyBtn: `Kopieren`,
+      downloadBtn: `TXT herunterladen`,
+      copiedMsg: `Kopiert.`,
+      retryBtn: `Erneut versuchen`,
       importDoneMsg: function (ok, total) { return `Import abgeschlossen: ${ok} von ${total} Links hinzugefügt.`; }
     }
   };
@@ -596,6 +659,37 @@
   const ioActions = document.getElementById('ioActions');
   const ioConfirm = document.getElementById('ioConfirm');
   const ioCancel = document.getElementById('ioCancel');
+  const ioExportActions = document.getElementById('ioExportActions');
+  const ioCopy = document.getElementById('ioCopy');
+  const ioDownload = document.getElementById('ioDownload');
+  const ioClose = document.getElementById('ioClose');
+  const keepChk = document.getElementById('keepChk');
+  const keepLabelEl = document.getElementById('keepLabelEl');
+  const restoreBtn = document.getElementById('restoreBtn');
+
+  // Persistență OPT-IN (implicit dezactivată): doar linkurile, în localStorage. Fără cereri de rețea la încărcare:
+  // lista salvată se reîncarcă numai când apeși „Restaurează”.
+  const LS_KEEP = 'tfc_keep', LS_LIST = 'tfc_list';
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } }
+  function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  function savedUrls() {
+    try {
+      const a = JSON.parse(lsGet(LS_LIST) || '[]');
+      return Array.isArray(a) ? a.filter(validUrl).slice(0, MAX_POSTS) : [];
+    } catch (e) { return []; }
+  }
+  let persistArmed = false;
+  function persistList() {
+    if (!keepChk.checked || !persistArmed) return;
+    lsSet(LS_LIST, JSON.stringify(state.posts.map(function (p) { return p.url; })));
+  }
+  function refreshRestore() {
+    const n = savedUrls().length;
+    const show = keepChk.checked && n > 0 && state.posts.length === 0;
+    restoreBtn.classList.toggle('hidden', !show);
+    if (show) restoreBtn.textContent = t('restoreBtn')(n);
+  }
 
   function setMsg(text, isError) {
     msgEl.textContent = text || '';
@@ -704,6 +798,7 @@
 
   function updateEmptyState() {
     emptyState.style.display = state.posts.length ? 'none' : '';
+    if (typeof persistList === 'function' && keepChk) { persistList(); refreshRestore(); }
   }
 
   function escapeHtml(s) {
@@ -724,7 +819,8 @@
       : (errKind === 'timeout') ? t('timeoutHint')
       : (errKind === 'proxy') ? t('badProxyMsg')
       : t('otherHint');
-    return '<p class="cardStatus error">' + t('loadFailedTitle') + '</p><p class="hint">' + hint + '</p>';
+    return '<p class="cardStatus error">' + t('loadFailedTitle') + '</p><p class="hint">' + hint + '</p>' +
+      '<button class="retry" type="button">' + escapeHtml(t('retryBtn')) + '</button>';
   }
 
   function renderPlaceholderCard(postEntry) {
@@ -840,6 +936,18 @@
     return true;
   }
 
+  threadEl.addEventListener('click', function (ev) {
+    const b = ev.target && ev.target.closest ? ev.target.closest('.retry') : null;
+    if (!b) return;
+    const card = b.closest('.card');
+    const entry = card && state.posts.find(function (p) { return p.id === card.dataset.id; });
+    if (!entry || entry.status !== 'error') return;
+    entry.status = 'loading'; entry.errKind = null;
+    card.classList.remove('failed'); card.classList.add('loading');
+    card.querySelector('.cardBody').innerHTML = renderLoadingBody(entry.url);
+    loadPost(entry, card);
+  });
+
   function applyLanguage(lang) {
     currentLang = LANGS.indexOf(lang) !== -1 ? lang : 'ro';
     document.documentElement.lang = currentLang;
@@ -862,6 +970,11 @@
     ioArea.setAttribute('aria-label', t('ioAreaAriaLabel'));
     ioConfirm.textContent = t('ioConfirmBtn');
     ioCancel.textContent = t('ioCancelBtn');
+    ioClose.textContent = t('ioCancelBtn');
+    ioCopy.textContent = t('copyBtn');
+    ioDownload.textContent = t('downloadBtn');
+    keepLabelEl.textContent = t('keepLabel');
+    refreshRestore();
     footerTextEl.textContent = t('footerText');
     privacyNoteEl.textContent = t('privacyNote');
     langSelect.setAttribute('aria-label', t('langSelectLabel'));
@@ -881,22 +994,41 @@
 
   // lista nu se salvează (fără stocare locală): avertizează dacă o închizi cu postări în ea
   window.addEventListener('beforeunload', function (e) {
-    if (state.posts && state.posts.length) { e.preventDefault(); e.returnValue = ''; }
+    if (state.posts && state.posts.length && !keepChk.checked) { e.preventDefault(); e.returnValue = ''; }
   });
 
   // export / import — singurul mecanism de persistență: userul își salvează
-  // singur lista (fără localStorage, fără server, fără telemetrie).
+  // singur lista (implicit fără localStorage, fără server, fără telemetrie).
   exportBtn.addEventListener('click', function () {
     ioArea.value = state.posts.map(function (p) { return p.url; }).join('\n');
     ioArea.classList.remove('hidden');
     ioActions.classList.add('hidden');
+    ioExportActions.classList.remove('hidden');
     ioArea.focus();
     ioArea.select();
+  });
+
+  ioCopy.addEventListener('click', function () {
+    function ok() { setMsg(t('copiedMsg')); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ioArea.value).then(ok, function () { ioArea.select(); });
+    else { ioArea.select(); try { if (document.execCommand('copy')) ok(); } catch (e) {} }
+  });
+  ioDownload.addEventListener('click', function () {
+    const blob = new Blob([ioArea.value + '\n'], { type: 'text/plain;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = 'threads-lista.txt';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  });
+  ioClose.addEventListener('click', function () {
+    ioArea.classList.add('hidden');
+    ioExportActions.classList.add('hidden');
   });
 
   importBtn.addEventListener('click', function () {
     ioArea.value = '';
     ioArea.classList.remove('hidden');
+    ioExportActions.classList.add('hidden');
     ioActions.classList.remove('hidden');
     ioArea.focus();
   });
@@ -929,8 +1061,31 @@
     ioActions.classList.add('hidden');
   });
 
+  keepChk.checked = lsGet(LS_KEEP) === '1';
+  keepChk.addEventListener('change', function () {
+    if (keepChk.checked) { lsSet(LS_KEEP, '1'); persistList(); }
+    else { lsDel(LS_KEEP); lsDel(LS_LIST); }
+    refreshRestore();
+  });
+  restoreBtn.addEventListener('click', function () {
+    const urls = savedUrls();
+    restoreBtn.classList.add('hidden');
+    const jobs = [];
+    urls.forEach(function (u) {
+      const r = createPost(u);
+      if (r.entry) jobs.push(function () { return loadPost(r.entry, r.card); });
+    });
+    setMsg(t('loadingShort'));
+    let next = 0;
+    async function worker() { while (next < jobs.length) { const j = jobs[next++]; await j(); } }
+    const ws = [];
+    for (let i = 0; i < IMPORT_CONCURRENCY; i++) ws.push(worker());
+    Promise.all(ws).then(function () { setMsg(t('importDoneMsg')(jobs.length, urls.length)); });
+  });
+
   applyLanguage(detectDefaultLang());
   updateEmptyState();
+  persistArmed = true;
 })();
 </script>
 </body>
