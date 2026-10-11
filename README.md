@@ -4,6 +4,8 @@ Vizualizator de postări publice Threads într-un singur fișier HTML: adaugi li
 
 **Live:** https://chiuta.github.io/Threads-fara-cont/
 
+**Ultima actualizare:** 11 octombrie 2026
+
 ![Captura de ecran](screenshot.png)
 
 ## Ce este
@@ -36,7 +38,7 @@ Un „fir" construit manual din link-uri către postări Threads publice. Aplica
 - Stocare: aplicația nu folosește `localStorage`, `sessionStorage`, cookie-uri sau IndexedDB. Lista există doar în memoria filei; o salvezi tu prin export.
 - Gazde contactate, doar când adaugi o postare: `graph.threads.net` (cererea oEmbed; sau proxy-ul pe care îl configurezi tu) și `www.threads.net` (scriptul `embed.js`, cod terț controlat de Meta, încărcat din adresa fixă din cod, niciodată din răspuns). `embed.js` creează apoi iframe-uri către domeniile Threads.
 - Meta vede adresa ta IP, datele browserului și postările pe care le vizualizezi. Un proxy configurat de tine vede IP-ul tău, link-urile adăugate și răspunsurile.
-- Pagina conține o politică CSP (`meta http-equiv`) care limitează scripturile la `threads.net`/`threads.com` și cadrele la domeniile Threads. Compatibilitatea cu `embed.js` real nu a putut fi testată din mediul de dezvoltare (fără acces la rețea).
+- Pagina conține o politică CSP (`meta http-equiv`) care limitează scripturile la scriptul propriu (identificat prin hash SHA-256, fără `'unsafe-inline'`) și la `threads.net`/`threads.com` și cadrele la domeniile Threads. Compatibilitatea cu `embed.js` real nu a putut fi testată din mediul de dezvoltare (fără acces la rețea).
 - Aplicația nu are analitice și nu trimite date nicăieri în afara celor de mai sus. Nu cere permisiuni ale browserului.
 
 ## Limite și avertismente
@@ -44,6 +46,7 @@ Un „fir" construit manual din link-uri către postări Threads publice. Aplica
 - Afirmația că oEmbed Threads funcționează fără token din 15 iunie 2026 provine din anunțul Meta („Tokenless access to Meta oEmbed APIs", blogul Meta pentru dezvoltatori, 15.06.2026); documentația veche cere încă token, iar limitele și condițiile pot diferi — verifică documentația Meta.
 - Termenii Meta permit embed-ul doar pentru afișare; aplicația nu extrage și nu păstrează conținutul postărilor.
 - Nu poate lista automat postările unui profil (Meta nu oferă acest API public).
+- Dacă închizi sau reîncarci pagina cu postări în fir, browserul cere confirmare (lista nu se salvează; folosește „Exportă lista”).
 - Postările private, restricționate pe vârstă sau geo-blocate nu se afișează.
 - Browserul poate bloca cererea directă (CORS); atunci este nevoie de un proxy, cu implicațiile de confidențialitate de mai sus.
 - Dacă dai de un conținut ilegal sau dăunător, raportează-l la Meta; aplicația nu moderează nimic.
@@ -52,9 +55,19 @@ Un „fir" construit manual din link-uri către postări Threads publice. Aplica
 
 Descarcă `index.html` și deschide-l în browser. Fără internet nu se poate încărca nicio postare (aplicația există pentru conținut de pe internet); interfața, validarea și importul/exportul funcționează local.
 
+## Istoric / Changelog
+
+### 11 octombrie 2026
+- Accesibilitate: conținutul este încadrat în `<main>`; axe-core raportează 0 încălcări la 1280 și 360 px.
+- Lista nu se mai pierde pe neașteptate: la închiderea/reîncărcarea filei cu postări în fir, browserul cere confirmare.
+- CSP: `script-src` folosește hash SHA-256 în loc de `'unsafe-inline'`.
+- README: anunțul Meta despre oEmbed fără token (15.06.2026) reconfirmat.
+
+**Surse verificate la 11.10.2026:** developers.facebook.com — „Tokenless access to Meta oEmbed APIs” (15.06.2026): Threads oEmbed fără token, limite posibil diferite.
+
 ## Licență
 
-Licența nu este încă declarată.
+Licența nu este încă declarată. (Notă: în depozit există un fișier `LICENSE` cu text MIT; cum se declară licența este decizia autorului și mențiunea din aplicație/README nu a fost modificată.)
 
 ## Autor
 
@@ -62,4 +75,4 @@ Alexio — Alexandru-Ionuț Chiuță, contact: alexio@trom.tf
 
 ## English summary
 
-Threads fără cont ("Threads without an account") is a single-file viewer for public Threads posts, in 7 languages. You paste individual post links; it fetches Meta's oEmbed (optionally via your own HTTPS CORS proxy) and renders a sanitised embed. The oEmbed response is never injected raw. No account, no analytics, no browser storage, but Meta sees your IP and the posts you view, and loads its own embed.js. License not yet declared.
+Threads fără cont ("Threads without an account") is a single-file viewer for public Threads posts, in 7 languages. You paste individual post links; it fetches Meta's oEmbed (optionally via your own HTTPS CORS proxy) and renders a sanitised embed. The oEmbed response is never injected raw. No account, no analytics, no browser storage, but Meta sees your IP and the posts you view, and loads its own embed.js. License not yet declared in the app/README (a LICENSE file with MIT text exists in the repository; the author decides how to declare it).

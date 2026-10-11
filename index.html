@@ -6,7 +6,7 @@
 <title>Threads fără cont</title>
 <meta name="description" content="Vizualizator de postări publice Threads, fără cont, prin embed-ul oficial Meta. 7 limbi. Fără analitice; conținutul embed se încarcă de la Meta.">
 <meta name="theme-color" content="#0F0E0D">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' https://www.threads.net https://www.threads.com; style-src 'unsafe-inline'; img-src data: https:; font-src https:; media-src https:; connect-src https:; frame-src https://www.threads.net https://www.threads.com https://*.threads.net https://*.threads.com; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-55T7TSCC857PTsSGJZa4QYTItwJiNlI+HF9PFIcrXx0=' https://www.threads.net https://www.threads.com; style-src 'unsafe-inline'; img-src data: https:; font-src https:; media-src https:; connect-src https:; frame-src https://www.threads.net https://www.threads.com https://*.threads.net https://*.threads.com; base-uri 'none'; form-action 'none'">
 <!--
   Threads fără cont — vizualizator de postări publice, fără autentificare, în 7 limbi
   (RO/EN/FR/IT/ES/PT/DE). Folosește API-ul oEmbed oficial al Meta
@@ -241,6 +241,7 @@
     </select>
   </header>
 
+  <main id="main">
   <section class="composer">
     <div class="row">
       <input id="urlInput" type="text" placeholder="https://www.threads.com/@utilizator/post/COD" aria-label="Link postare Threads">
@@ -273,6 +274,7 @@
     <button id="ioConfirm" type="button">Confirmă import</button>
     <button id="ioCancel" type="button">Renunță</button>
   </div>
+  </main>
 
   <footer>
     <p id="footerTextEl">Acest instrument afișează postări Threads individuale prin API-ul oEmbed oficial al Meta (fără token din 15 iunie 2026, conform anunțului Meta la data scrierii; verifică documentația Meta — limitele și condițiile pot diferi). Meta nu oferă acces public pentru a lista automat toate postările unui profil, iar termenii oEmbed permit doar afișarea unei postări — nu extragerea sau păstrarea conținutului ei. De aceea firul se construiește manual: răsfoiește threads.com (funcționează fără cont pentru postări publice), copiază link-ul fiecărei postări și adaug-o mai sus.</p>
@@ -876,6 +878,11 @@
     if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); submitInput(); }
   });
   langSelect.addEventListener('change', function () { applyLanguage(this.value); });
+
+  // lista nu se salvează (fără stocare locală): avertizează dacă o închizi cu postări în ea
+  window.addEventListener('beforeunload', function (e) {
+    if (state.posts && state.posts.length) { e.preventDefault(); e.returnValue = ''; }
+  });
 
   // export / import — singurul mecanism de persistență: userul își salvează
   // singur lista (fără localStorage, fără server, fără telemetrie).
