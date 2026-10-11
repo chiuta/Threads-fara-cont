@@ -6,7 +6,7 @@
 <title>Threads fără cont</title>
 <meta name="description" content="Vizualizator de postări publice Threads, fără cont, prin embed-ul oficial Meta. 7 limbi. Fără analitice; conținutul embed se încarcă de la Meta.">
 <meta name="theme-color" content="#0F0E0D">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src https://www.threads.net https://www.threads.com 'sha256-KmxbBPuoofLUAgmYX/OQk+V680BzfcsgQWv9mzGpln4='; style-src 'unsafe-inline'; img-src data: https:; font-src https:; media-src https:; connect-src https:; frame-src https://www.threads.net https://www.threads.com https://*.threads.net https://*.threads.com; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src https://www.threads.net https://www.threads.com 'sha256-LYonOgByVHBofEXrIyz4TLWW3iVyUxmEJvFHNnR1664='; style-src 'unsafe-inline'; img-src data: https:; font-src https:; media-src https:; connect-src https:; frame-src https://www.threads.net https://www.threads.com https://*.threads.net https://*.threads.com; base-uri 'none'; form-action 'none'">
 <!--
   Threads fără cont — vizualizator de postări publice, fără autentificare, în 7 limbi
   (RO/EN/FR/IT/ES/PT/DE). Folosește API-ul oEmbed oficial al Meta
@@ -208,6 +208,7 @@
   .keepRow input { width: 18px; height: 18px; accent-color: var(--accent); }
   .keepRow button { padding: 8px 14px; background: var(--surface); color: var(--text); border: 1px solid var(--border); font-weight: 500; }
   .retry { margin-top: 10px; padding: 8px 14px; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); font-weight: 500; }
+  .openlink { display: inline-block; margin: 10px 0 0 8px; padding: 8px 4px; color: var(--accent); }
   @media print {
     .composer, .tools, .keepRow, #ioArea, .ioActions, footer, .langSelect, .remove, noscript { display: none !important; }
     body { background: #fff; color: #000; }
@@ -352,6 +353,8 @@
       downloadBtn: `Descarcă .txt`,
       copiedMsg: `Copiat.`,
       retryBtn: `Reîncearcă`,
+      offlineHint: `Nu ai conexiune la internet. Postarea se reîncearcă automat la reconectare.`,
+      openLink: `Deschide pe Threads ↗`,
       importDoneMsg: function (ok, total) { return `Import finalizat: ${ok} din ${total} link-uri adăugate.`; }
     },
     en: {
@@ -396,6 +399,8 @@
       downloadBtn: `Download .txt`,
       copiedMsg: `Copied.`,
       retryBtn: `Retry`,
+      offlineHint: `You appear to be offline. The post will retry automatically when you reconnect.`,
+      openLink: `Open on Threads ↗`,
       importDoneMsg: function (ok, total) { return `Import complete: ${ok} of ${total} links added.`; }
     },
     fr: {
@@ -440,6 +445,8 @@
       downloadBtn: `Télécharger .txt`,
       copiedMsg: `Copié.`,
       retryBtn: `Réessayer`,
+      offlineHint: `Vous semblez hors ligne. La publication sera rechargée automatiquement à la reconnexion.`,
+      openLink: `Ouvrir sur Threads ↗`,
       importDoneMsg: function (ok, total) { return `Import terminé : ${ok} lien(s) sur ${total} ajouté(s).`; }
     },
     it: {
@@ -484,6 +491,8 @@
       downloadBtn: `Scarica .txt`,
       copiedMsg: `Copiato.`,
       retryBtn: `Riprova`,
+      offlineHint: `Sembri offline. Il post verrà ricaricato automaticamente alla riconnessione.`,
+      openLink: `Apri su Threads ↗`,
       importDoneMsg: function (ok, total) { return `Importazione completata: ${ok} di ${total} link aggiunti.`; }
     },
     es: {
@@ -528,6 +537,8 @@
       downloadBtn: `Descargar .txt`,
       copiedMsg: `Copiado.`,
       retryBtn: `Reintentar`,
+      offlineHint: `Parece que no tienes conexión. La publicación se reintentará automáticamente al reconectar.`,
+      openLink: `Abrir en Threads ↗`,
       importDoneMsg: function (ok, total) { return `Importación completa: ${ok} de ${total} enlaces añadidos.`; }
     },
     pt: {
@@ -572,6 +583,8 @@
       downloadBtn: `Transferir .txt`,
       copiedMsg: `Copiado.`,
       retryBtn: `Tentar novamente`,
+      offlineHint: `Pareces estar sem ligação. A publicação será recarregada automaticamente quando voltares a estar online.`,
+      openLink: `Abrir no Threads ↗`,
       importDoneMsg: function (ok, total) { return `Importação concluída: ${ok} de ${total} links adicionados.`; }
     },
     de: {
@@ -616,6 +629,8 @@
       downloadBtn: `TXT herunterladen`,
       copiedMsg: `Kopiert.`,
       retryBtn: `Erneut versuchen`,
+      offlineHint: `Du scheinst offline zu sein. Der Beitrag wird beim Wiederverbinden automatisch erneut geladen.`,
+      openLink: `Auf Threads öffnen ↗`,
       importDoneMsg: function (ok, total) { return `Import abgeschlossen: ${ok} von ${total} Links hinzugefügt.`; }
     }
   };
@@ -811,16 +826,18 @@
     return '<p class="cardStatus">' + t('cardLoading') + '</p><p class="cardUrl">' + escapeHtml(url) + '</p>';
   }
 
-  function renderErrorBody(errKind) {
+  function renderErrorBody(errKind, url) {
     if (errKind === 'empty') {
       return '<p class="cardStatus error">' + t('emptyResponseMsg') + '</p>';
     }
-    const hint = (errKind === 'cors') ? t('corsHint')
+    const hint = (errKind === 'offline') ? t('offlineHint')
+      : (errKind === 'cors') ? t('corsHint')
       : (errKind === 'timeout') ? t('timeoutHint')
       : (errKind === 'proxy') ? t('badProxyMsg')
       : t('otherHint');
     return '<p class="cardStatus error">' + t('loadFailedTitle') + '</p><p class="hint">' + hint + '</p>' +
-      '<button class="retry" type="button">' + escapeHtml(t('retryBtn')) + '</button>';
+      '<button class="retry" type="button">' + escapeHtml(t('retryBtn')) + '</button>' +
+      (url ? ' <a class="openlink" href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(t('openLink')) + '</a>' : '');
   }
 
   function renderPlaceholderCard(postEntry) {
@@ -864,7 +881,7 @@
       if (p.status === 'loading') {
         card.querySelector('.cardBody').innerHTML = renderLoadingBody(p.url);
       } else if (p.status === 'error') {
-        card.querySelector('.cardBody').innerHTML = renderErrorBody(p.errKind);
+        card.querySelector('.cardBody').innerHTML = renderErrorBody(p.errKind, p.url);
       }
     });
   }
@@ -898,7 +915,7 @@
       card.classList.remove('loading');
       card.classList.add('failed');
       card.querySelector('.cardBody').replaceChildren();
-      card.querySelector('.cardBody').innerHTML = renderErrorBody(kind);
+      card.querySelector('.cardBody').innerHTML = renderErrorBody(kind, entry.url);
     }
     try {
       const reqUrl = buildOembedUrl(entry.url);
@@ -917,7 +934,7 @@
     } catch (err) {
       if (entry.removed) return;
       if (timedOut) fail('timeout');
-      else fail((err instanceof TypeError) ? 'cors' : 'other');
+      else fail((err instanceof TypeError) ? (navigator.onLine === false ? 'offline' : 'cors') : 'other');
     } finally {
       clearTimeout(timer);
       entry.controller = null;
@@ -939,13 +956,22 @@
   threadEl.addEventListener('click', function (ev) {
     const b = ev.target && ev.target.closest ? ev.target.closest('.retry') : null;
     if (!b) return;
-    const card = b.closest('.card');
+    retryCard(b.closest('.card'));
+  });
+
+  function retryCard(card) {
     const entry = card && state.posts.find(function (p) { return p.id === card.dataset.id; });
     if (!entry || entry.status !== 'error') return;
     entry.status = 'loading'; entry.errKind = null;
     card.classList.remove('failed'); card.classList.add('loading');
     card.querySelector('.cardBody').innerHTML = renderLoadingBody(entry.url);
     loadPost(entry, card);
+  }
+  // la reconectare, cardurile eșuate din cauza lipsei de rețea se reîncearcă singure
+  window.addEventListener('online', function () {
+    state.posts.forEach(function (p) {
+      if (p.status === 'error' && p.errKind === 'offline') retryCard(threadEl.querySelector('[data-id="' + p.id + '"]'));
+    });
   });
 
   function applyLanguage(lang) {

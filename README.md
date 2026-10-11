@@ -21,7 +21,7 @@ Un „fir" construit manual din link-uri către postări Threads publice. Aplica
 - Timeout de 15 secunde per cerere, cu mesaje de eroare distincte (CORS/rețea, timeout, proxy invalid, răspuns gol).
 - Răspunsul oEmbed (și al proxy-ului) este tratat ca nesigur: se parsează într-un document inert și se păstrează doar `blockquote.text-post-media` cu text și legături către `threads.net`/`threads.com`; scripturile, atributele `on*`, `style` și URL-urile `javascript:` sunt eliminate.
 - Salvare locală opțională („Ține minte lista în acest browser”, implicit oprită): se păstrează doar linkurile, în `localStorage`; la următoarea vizită apare butonul „Restaurează lista salvată”, fără nicio cerere de rețea până îl apeși. Dezactivarea șterge lista salvată.
-- Export: zona de text are acum butoane „Copiază” și „Descarcă .txt”; cardurile eșuate au buton „Reîncearcă”; stil de tipărire (se tipărește doar firul).
+- Export: zona de text are acum butoane „Copiază” și „Descarcă .txt”; cardurile eșuate au buton „Reîncearcă”, legătură „Deschide pe Threads ↗” și mesaj „offline” cu reîncercare automată la reconectare; stil de tipărire (se tipărește doar firul).
 - Selector de limbă; limba implicită din setările browserului.
 
 ## Manual de utilizare
@@ -58,6 +58,9 @@ Un „fir" construit manual din link-uri către postări Threads publice. Aplica
 Descarcă `index.html` și deschide-l în browser. Fără internet nu se poate încărca nicio postare (aplicația există pentru conținut de pe internet); interfața, validarea și importul/exportul funcționează local.
 
 ## Istoric / Changelog
+
+### 11 octombrie 2026 (a treia trecere)
+- Carduri eșuate: mesaj distinct „ești offline” (când browserul raportează lipsa conexiunii, în 7 limbi), reîncercare automată la reconectare și legătura „Deschide pe Threads ↗” către postarea originală (se deschide doar la clic), ca să rămână utilă și fără embed. CSP: hash recalculat.
 
 ### 11 octombrie 2026 (a doua trecere)
 - Salvare locală opțională a listei de linkuri (implicit oprită) cu restaurare la cerere; export cu „Copiază”/„Descarcă .txt”; „Reîncearcă” pe cardurile eșuate; stil de tipărire; texte noi în toate cele 7 limbi. CSP: hash-ul scriptului recalculat.
