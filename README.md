@@ -1,10 +1,10 @@
 # Threads fără cont
 
+**Versiune:** 1.0.0 · **Ultima actualizare:** 12 octombrie 2026
+
 Vizualizator de postări publice Threads într-un singur fișier HTML: adaugi link-uri individuale și le vezi redate prin embed-ul oficial Meta, fără cont, în 7 limbi.
 
 **Live:** https://chiuta.github.io/Threads-fara-cont/
-
-**Ultima actualizare:** 11 octombrie 2026
 
 ![Captura de ecran](screenshot.png)
 
@@ -58,6 +58,9 @@ Un „fir" construit manual din link-uri către postări Threads publice. Aplica
 Descarcă `index.html` și deschide-l în browser. Fără internet nu se poate încărca nicio postare (aplicația există pentru conținut de pe internet); interfața, validarea și importul/exportul funcționează local.
 
 ## Istoric / Changelog
+
+### 12 octombrie 2026 — versiunea 1.0.0
+- 1.0.0 — 2026-10-12: versiunea și data ultimei actualizări sunt afișate în aplicație
 
 ### 11 octombrie 2026 (a treia trecere)
 - Carduri eșuate: mesaj distinct „ești offline” (când browserul raportează lipsa conexiunii, în 7 limbi), reîncercare automată la reconectare și legătura „Deschide pe Threads ↗” către postarea originală (se deschide doar la clic), ca să rămână utilă și fără embed. CSP: hash recalculat.

@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Threads fără cont</title>
 <meta name="description" content="Vizualizator de postări publice Threads, fără cont, prin embed-ul oficial Meta. 7 limbi. Fără analitice; conținutul embed se încarcă de la Meta.">
+<meta name="application-version" content="1.0.0">
+<meta name="last-updated" content="2026-10-12">
 <meta name="theme-color" content="#0F0E0D">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src https://www.threads.net https://www.threads.com 'sha256-LYonOgByVHBofEXrIyz4TLWW3iVyUxmEJvFHNnR1664='; style-src 'unsafe-inline'; img-src data: https:; font-src https:; media-src https:; connect-src https:; frame-src https://www.threads.net https://www.threads.com https://*.threads.net https://*.threads.com; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src https://www.threads.net https://www.threads.com 'sha256-uosWl2NdgRhjA5VwEI6VspZIKj4vTdfJmSbADpxgIfU='; style-src 'unsafe-inline'; img-src data: https:; font-src https:; media-src https:; connect-src https:; frame-src https://www.threads.net https://www.threads.com https://*.threads.net https://*.threads.com; base-uri 'none'; form-action 'none'">
 <!--
   Threads fără cont — vizualizator de postări publice, fără autentificare, în 7 limbi
   (RO/EN/FR/IT/ES/PT/DE). Folosește API-ul oEmbed oficial al Meta
@@ -301,6 +303,7 @@
   <footer>
     <p id="footerTextEl">Acest instrument afișează postări Threads individuale prin API-ul oEmbed oficial al Meta (fără token din 15 iunie 2026, conform anunțului Meta la data scrierii; verifică documentația Meta — limitele și condițiile pot diferi). Meta nu oferă acces public pentru a lista automat toate postările unui profil, iar termenii oEmbed permit doar afișarea unei postări — nu extragerea sau păstrarea conținutului ei. De aceea firul se construiește manual: răsfoiește threads.com (funcționează fără cont pentru postări publice), copiază link-ul fiecărei postări și adaug-o mai sus.</p>
     <p id="privacyNoteEl">Fără cont ≠ fără urmărire. Link-ul postării este trimis la Meta (graph.threads.net), direct sau prin proxy-ul tău, iar postarea afișată este încărcată de la Meta prin scriptul lor embed.js (cod extern, controlat de Meta): Meta vede adresa ta IP și ce postări vizualizezi. Instrumentul nu are analitice și nu stochează nimic — lista există doar în memoria filei, o salvezi tu prin export. Folosește embed-urile doar pentru afișare, conform termenilor Meta.</p>
+    <p id="app-version"><span id="appVersionLabel">Versiune</span> v 1.0.0 · 2026-10-12</p>
   </footer>
 </div>
 
@@ -313,6 +316,7 @@
   const I18N = {
     ro: {
       pageTitle: `Threads fără cont`,
+      versionLabel: `Versiune`,
       h1Suffix: `fără cont`,
       lede: `Adună link-uri către postări publice de pe Threads și vezi-le redate curat — prin embed-ul oficial Meta, fără să ai nevoie de cont.`,
       inputPlaceholder: `https://www.threads.com/@utilizator/post/COD`,
@@ -359,6 +363,7 @@
     },
     en: {
       pageTitle: `Threads without an account`,
+      versionLabel: `Version`,
       h1Suffix: `without an account`,
       lede: `Collect links to public Threads posts and view them cleanly rendered — through Meta's official embed, no account needed.`,
       inputPlaceholder: `https://www.threads.com/@username/post/CODE`,
@@ -405,6 +410,7 @@
     },
     fr: {
       pageTitle: `Threads sans compte`,
+      versionLabel: `Version`,
       h1Suffix: `sans compte`,
       lede: `Rassemblez des liens vers des publications Threads publiques et affichez-les proprement — via l'intégration officielle de Meta, sans avoir besoin de compte.`,
       inputPlaceholder: `https://www.threads.com/@utilisateur/post/CODE`,
@@ -451,6 +457,7 @@
     },
     it: {
       pageTitle: `Threads senza account`,
+      versionLabel: `Versione`,
       h1Suffix: `senza account`,
       lede: `Raccogli link a post pubblici di Threads e visualizzali in modo pulito — tramite l'embed ufficiale di Meta, senza bisogno di un account.`,
       inputPlaceholder: `https://www.threads.com/@utente/post/CODICE`,
@@ -497,6 +504,7 @@
     },
     es: {
       pageTitle: `Threads sin cuenta`,
+      versionLabel: `Versión`,
       h1Suffix: `sin cuenta`,
       lede: `Reúne enlaces a publicaciones públicas de Threads y visualízalas de forma limpia — mediante la integración oficial de Meta, sin necesidad de cuenta.`,
       inputPlaceholder: `https://www.threads.com/@usuario/post/CODIGO`,
@@ -543,6 +551,7 @@
     },
     pt: {
       pageTitle: `Threads sem conta`,
+      versionLabel: `Versão`,
       h1Suffix: `sem conta`,
       lede: `Reúne links para publicações públicas do Threads e vê-las apresentadas de forma limpa — através da incorporação oficial da Meta, sem precisar de conta.`,
       inputPlaceholder: `https://www.threads.com/@utilizador/post/CODIGO`,
@@ -589,6 +598,7 @@
     },
     de: {
       pageTitle: `Threads ohne Konto`,
+      versionLabel: `Version`,
       h1Suffix: `ohne Konto`,
       lede: `Sammle Links zu öffentlichen Threads-Beiträgen und sieh sie dir sauber dargestellt an — über die offizielle Einbettung von Meta, ganz ohne Konto.`,
       inputPlaceholder: `https://www.threads.com/@benutzername/post/CODE`,
@@ -666,6 +676,7 @@
   const h1Suffix = document.getElementById('h1Suffix');
   const ledeEl = document.getElementById('ledeEl');
   const footerTextEl = document.getElementById('footerTextEl');
+  const appVersionLabelEl = document.getElementById('appVersionLabel');
   const privacyNoteEl = document.getElementById('privacyNoteEl');
   const langSelect = document.getElementById('langSelect');
   const exportBtn = document.getElementById('exportBtn');
@@ -1003,6 +1014,7 @@
     refreshRestore();
     footerTextEl.textContent = t('footerText');
     privacyNoteEl.textContent = t('privacyNote');
+    appVersionLabelEl.textContent = t('versionLabel');
     langSelect.setAttribute('aria-label', t('langSelectLabel'));
     langSelect.value = currentLang;
     regenerateDynamicChrome();
