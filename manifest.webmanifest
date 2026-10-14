@@ -1,0 +1,37 @@
+{
+  "name": "Threads fără cont",
+  "short_name": "Threads",
+  "description": "Vizualizator de postări publice Threads, fără cont, prin embed-ul oficial Meta. 7 limbi. Fără analitice; conținutul embed se încarcă de la Meta.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "lang": "ro",
+  "background_color": "#0f0e0d",
+  "theme_color": "#0f0e0d",
+  "categories": [
+    "entertainment",
+    "lifestyle"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "x_fff_pwa": 1
+}

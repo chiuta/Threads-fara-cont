@@ -1,6 +1,6 @@
 # Threads fără cont
 
-**Versiune:** 1.0.0 · **Ultima actualizare:** 12 octombrie 2026
+**Versiune:** 1.1.0 · **Ultima actualizare:** 14 octombrie 2026
 
 Vizualizator de postări publice Threads într-un singur fișier HTML: adaugi link-uri individuale și le vezi redate prin embed-ul oficial Meta, fără cont, în 7 limbi.
 
@@ -58,6 +58,9 @@ Un „fir" construit manual din link-uri către postări Threads publice. Aplica
 Descarcă `index.html` și deschide-l în browser. Fără internet nu se poate încărca nicio postare (aplicația există pentru conținut de pe internet); interfața, validarea și importul/exportul funcționează local.
 
 ## Istoric / Changelog
+
+### 1.1.0 — 2026-10-14
+- Copie de rezervă și etichetare date (fff-kit).
 
 ### 12 octombrie 2026 — versiunea 1.0.0
 - 1.0.0 — 2026-10-12: versiunea și data ultimei actualizări sunt afișate în aplicație
