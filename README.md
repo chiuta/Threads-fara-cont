@@ -81,7 +81,7 @@ Descarcă `index.html` și deschide-l în browser. Fără internet nu se poate �
 
 ## Licență
 
-Licența nu este încă declarată. (Notă: în depozit există un fișier `LICENSE` cu text MIT; cum se declară licența este decizia autorului și mențiunea din aplicație/README nu a fost modificată.)
+MIT — vezi fișierul `LICENSE`.
 
 ## Autor
 
@@ -89,4 +89,4 @@ Alexio — Alexandru-Ionuț Chiuță, contact: alexio@trom.tf
 
 ## English summary
 
-Threads fără cont ("Threads without an account") is a single-file viewer for public Threads posts, in 7 languages. You paste individual post links; it fetches Meta's oEmbed (optionally via your own HTTPS CORS proxy) and renders a sanitised embed. The oEmbed response is never injected raw. No account, no analytics, no browser storage, but Meta sees your IP and the posts you view, and loads its own embed.js. License not yet declared in the app/README (a LICENSE file with MIT text exists in the repository; the author decides how to declare it).
+Threads fără cont ("Threads without an account") is a single-file viewer for public Threads posts, in 7 languages. You paste individual post links; it fetches Meta's oEmbed (optionally via your own HTTPS CORS proxy) and renders a sanitised embed. The oEmbed response is never injected raw. No account, no analytics, no browser storage, but Meta sees your IP and the posts you view, and loads its own embed.js. License: MIT (see LICENSE).
