@@ -91,6 +91,6 @@ MIT — vezi fișierul `LICENSE`.
 
 Alexio — Alexandru-Ionuț Chiuță, contact: alexio@trom.tf
 
-## English summary
+## Rezumat
 
-Threads fără cont ("Threads without an account") is a single-file viewer for public Threads posts, in 8 languages. You paste individual post links; it fetches Meta's oEmbed (optionally via your own HTTPS CORS proxy) and renders a sanitised embed. The oEmbed response is never injected raw. No account, no analytics, no browser storage, but Meta sees your IP and the posts you view, and loads its own embed.js. License: MIT (see LICENSE).
+Threads fără cont este un vizualizator într-un singur fișier pentru postări publice Threads, în 8 limbi. Lipești linkuri către postări individuale; aplicația preia oEmbed de la Meta (opțional printr-un proxy CORS HTTPS al tău) și redă o încorporare sanitizată. Răspunsul oEmbed nu este niciodată injectat brut. Fără cont, fără analitice, fără stocare în browser, dar Meta îți vede adresa IP și postările pe care le vizualizezi și își încarcă propriul embed.js. Licență: MIT (vezi LICENSE).
