@@ -2,9 +2,11 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · **Español** · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versión:** 1.1.0 · **Última actualización:** 2026-10-14
+**Versión:** 1.2.0 · **Última actualización:** 2026-10-19
 
-Visor de publicaciones públicas de Threads en un único archivo HTML: añades enlaces individuales y los ves mostrados mediante el embed oficial de Meta, sin cuenta, en 7 idiomas.
+Idiomas de la interfaz: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
+
+Visor de publicaciones públicas de Threads en un único archivo HTML: añades enlaces individuales y los ves mostrados mediante el embed oficial de Meta, sin cuenta, en 8 idiomas.
 
 **Aplicación en línea:** https://chiuta.github.io/Threads-fara-cont/
 
@@ -12,7 +14,7 @@ Visor de publicaciones públicas de Threads en un único archivo HTML: añades e
 
 ## Qué es
 
-Un «hilo» construido a mano a partir de enlaces a publicaciones públicas de Threads. La aplicación solicita la publicación a la API oEmbed de Meta (`graph.threads.net/v1.0/oembed`) y la muestra en la página. La interfaz existe en rumano, inglés, francés, italiano, español, portugués y alemán. Es un proyecto personal, no oficial, sin relación con Meta.
+Un «hilo» construido a mano a partir de enlaces a publicaciones públicas de Threads. La aplicación solicita la publicación a la API oEmbed de Meta (`graph.threads.net/v1.0/oembed`) y la muestra en la página. La interfaz existe en rumano, inglés, francés, italiano, español, portugués, alemán y húngaro. Es un proyecto personal, no oficial, sin relación con Meta.
 
 ## Funciones
 
@@ -91,4 +93,4 @@ Alexio — Alexandru-Ionuț Chiuță, contacto: alexio@trom.tf
 
 ## Resumen
 
-Threads fără cont («Threads sin cuenta») es un visor de un único archivo para publicaciones públicas de Threads, en 7 idiomas. Pegas enlaces de publicaciones individuales; obtiene el oEmbed de Meta (opcionalmente mediante tu propio proxy CORS HTTPS) y muestra un embed saneado. La respuesta oEmbed nunca se inyecta tal cual. Sin cuenta, sin analítica, sin almacenamiento en el navegador, pero Meta ve tu IP y las publicaciones que visualizas, y carga su propio embed.js. Licencia: MIT (véase LICENSE).
+Threads fără cont («Threads sin cuenta») es un visor de un único archivo para publicaciones públicas de Threads, en 8 idiomas. Pegas enlaces de publicaciones individuales; obtiene el oEmbed de Meta (opcionalmente mediante tu propio proxy CORS HTTPS) y muestra un embed saneado. La respuesta oEmbed nunca se inyecta tal cual. Sin cuenta, sin analítica, sin almacenamiento en el navegador, pero Meta ve tu IP y las publicaciones que visualizas, y carga su propio embed.js. Licencia: MIT (véase LICENSE).

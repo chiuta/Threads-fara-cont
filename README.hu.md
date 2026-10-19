@@ -2,9 +2,11 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · **Magyar**
 
-**Verzió:** 1.1.0 · **Utolsó frissítés:** 2026-10-14
+**Verzió:** 1.2.0 · **Utolsó frissítés:** 2026-10-19
 
-Nyilvános Threads-bejegyzések megjelenítője egyetlen HTML-fájlban: egyedi hivatkozásokat adsz hozzá, és a Meta hivatalos beágyazásán keresztül látod őket megjelenítve, fiók nélkül, 7 nyelven.
+A felület nyelvei: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
+
+Nyilvános Threads-bejegyzések megjelenítője egyetlen HTML-fájlban: egyedi hivatkozásokat adsz hozzá, és a Meta hivatalos beágyazásán keresztül látod őket megjelenítve, fiók nélkül, 8 nyelven.
 
 **Online alkalmazás:** https://chiuta.github.io/Threads-fara-cont/
 
@@ -12,7 +14,7 @@ Nyilvános Threads-bejegyzések megjelenítője egyetlen HTML-fájlban: egyedi h
 
 ## Mi ez
 
-Egy „szál”, amelyet kézzel építesz fel nyilvános Threads-bejegyzésekre mutató hivatkozásokból. Az alkalmazás a Meta oEmbed API-jától (`graph.threads.net/v1.0/oembed`) kéri el a bejegyzést, és megjeleníti az oldalon. A felület román, angol, francia, olasz, spanyol, portugál és német nyelven létezik. Személyes, nem hivatalos projekt, a Metához semmi köze.
+Egy „szál”, amelyet kézzel építesz fel nyilvános Threads-bejegyzésekre mutató hivatkozásokból. Az alkalmazás a Meta oEmbed API-jától (`graph.threads.net/v1.0/oembed`) kéri el a bejegyzést, és megjeleníti az oldalon. A felület román, angol, francia, olasz, spanyol, portugál, német és magyar nyelven létezik. Személyes, nem hivatalos projekt, a Metához semmi köze.
 
 ## Funkciók
 
@@ -91,4 +93,4 @@ Alexio — Alexandru-Ionuț Chiuță, kapcsolat: alexio@trom.tf
 
 ## Összefoglaló
 
-A Threads fără cont („Threads fiók nélkül”) egyetlen fájlból álló megjelenítő nyilvános Threads-bejegyzésekhez, 7 nyelven. Egyes bejegyzések hivatkozásait illeszted be; lekéri a Meta oEmbedjét (opcionálisan a saját HTTPS CORS-proxyd segítségével), és megtisztított beágyazást jelenít meg. Az oEmbed-választ soha nem szúrja be nyersen. Nincs fiók, nincs analitika, nincs böngészőtárolás, de a Meta látja az IP-det és a megtekintett bejegyzéseket, és betölti a saját embed.js-ét. Licenc: MIT (lásd LICENSE).
+A Threads fără cont („Threads fiók nélkül”) egyetlen fájlból álló megjelenítő nyilvános Threads-bejegyzésekhez, 8 nyelven. Egyes bejegyzések hivatkozásait illeszted be; lekéri a Meta oEmbedjét (opcionálisan a saját HTTPS CORS-proxyd segítségével), és megtisztított beágyazást jelenít meg. Az oEmbed-választ soha nem szúrja be nyersen. Nincs fiók, nincs analitika, nincs böngészőtárolás, de a Meta látja az IP-det és a megtekintett bejegyzéseket, és betölti a saját embed.js-ét. Licenc: MIT (lásd LICENSE).
