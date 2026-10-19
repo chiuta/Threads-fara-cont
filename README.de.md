@@ -10,7 +10,7 @@ Betrachter für öffentliche Threads-Beiträge in einer einzigen HTML-Datei: Sie
 
 **Online-Anwendung:** https://chiuta.github.io/Threads-fara-cont/
 
-![Screenshot](screenshot.png)
+![Screenshot](screenshot.de.png)
 
 ## Was es ist
 

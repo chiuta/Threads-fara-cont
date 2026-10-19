@@ -10,7 +10,7 @@ Vizualizator de postări publice Threads într-un singur fișier HTML: adaugi li
 
 **Live:** https://chiuta.github.io/Threads-fara-cont/
 
-![Captura de ecran](screenshot.png)
+![Captura de ecran](screenshot.ro.png)
 
 ## Ce este
 

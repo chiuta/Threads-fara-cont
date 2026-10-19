@@ -10,7 +10,7 @@ A viewer for public Threads posts in a single HTML file: you add individual link
 
 **Live app:** https://chiuta.github.io/Threads-fara-cont/
 
-![Screenshot](screenshot.png)
+![Screenshot](screenshot.en.png)
 
 ## What it is
 

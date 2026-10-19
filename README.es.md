@@ -10,7 +10,7 @@ Visor de publicaciones públicas de Threads en un único archivo HTML: añades e
 
 **Aplicación en línea:** https://chiuta.github.io/Threads-fara-cont/
 
-![Captura de pantalla](screenshot.png)
+![Captura de pantalla](screenshot.es.png)
 
 ## Qué es
 

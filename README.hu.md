@@ -10,7 +10,7 @@ Nyilvános Threads-bejegyzések megjelenítője egyetlen HTML-fájlban: egyedi h
 
 **Online alkalmazás:** https://chiuta.github.io/Threads-fara-cont/
 
-![Képernyőkép](screenshot.png)
+![Képernyőkép](screenshot.hu.png)
 
 ## Mi ez
 

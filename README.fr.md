@@ -10,7 +10,7 @@ Visionneuse de publications Threads publiques dans un seul fichier HTML : vous a
 
 **Application en ligne :** https://chiuta.github.io/Threads-fara-cont/
 
-![Capture d'écran](screenshot.png)
+![Capture d'écran](screenshot.fr.png)
 
 ## De quoi s'agit-il
 

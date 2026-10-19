@@ -10,7 +10,7 @@ Visualizador de publicações públicas do Threads num único ficheiro HTML: adi
 
 **Aplicação online:** https://chiuta.github.io/Threads-fara-cont/
 
-![Captura de ecrã](screenshot.png)
+![Captura de ecrã](screenshot.pt.png)
 
 ## O que é
 

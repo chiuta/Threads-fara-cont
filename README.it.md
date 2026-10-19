@@ -10,7 +10,7 @@ Visualizzatore di post pubblici di Threads in un unico file HTML: aggiungi link 
 
 **Applicazione online:** https://chiuta.github.io/Threads-fara-cont/
 
-![Schermata](screenshot.png)
+![Schermata](screenshot.it.png)
 
 ## Che cos'è
 
