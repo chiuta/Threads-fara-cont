@@ -1,92 +1,94 @@
 # Threads fără cont
 
-**Versiune:** 1.1.0 · **Ultima actualizare:** 14 octombrie 2026
+**English** · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-Vizualizator de postări publice Threads într-un singur fișier HTML: adaugi link-uri individuale și le vezi redate prin embed-ul oficial Meta, fără cont, în 7 limbi.
+**Version:** 1.1.0 · **Last updated:** 2026-10-14
 
-**Live:** https://chiuta.github.io/Threads-fara-cont/
+A viewer for public Threads posts in a single HTML file: you add individual links and see them rendered through Meta's official embed, with no account, in 7 languages.
 
-![Captura de ecran](screenshot.png)
+**Live app:** https://chiuta.github.io/Threads-fara-cont/
 
-## Ce este
+![Screenshot](screenshot.png)
 
-Un „fir" construit manual din link-uri către postări Threads publice. Aplicația cere postarea de la API-ul oEmbed al Meta (`graph.threads.net/v1.0/oembed`) și o afișează în pagină. Interfața există în română, engleză, franceză, italiană, spaniolă, portugheză și germană. Este un proiect personal, neoficial, fără legătură cu Meta.
+## What it is
 
-## Funcții
+A "thread" built by hand from links to public Threads posts. The app requests the post from Meta's oEmbed API (`graph.threads.net/v1.0/oembed`) and displays it in the page. The interface exists in Romanian, English, French, Italian, Spanish, Portuguese and German. It is a personal, unofficial project, unrelated to Meta.
 
-- Adăugare de postări după link (`threads.com` / `threads.net`, forma `@utilizator/post/COD` sau `t/COD`), cu validare strictă și detectarea duplicatelor.
-- Fiecare card are buton de eliminare; cererile în curs se anulează la eliminare.
-- Export (un link pe linie, într-o zonă de text) și import de listă: maximum 50 de linii per import, maximum 100 de postări în fir, încărcare cu concurență limitată; ordinea cardurilor respectă ordinea listei.
-- Câmp opțional „Proxy CORS": doar `https://`, fără utilizator/parolă; poate conține `{url}` sau primește URL-ul oEmbed codat la final.
-- Timeout de 15 secunde per cerere, cu mesaje de eroare distincte (CORS/rețea, timeout, proxy invalid, răspuns gol).
-- Răspunsul oEmbed (și al proxy-ului) este tratat ca nesigur: se parsează într-un document inert și se păstrează doar `blockquote.text-post-media` cu text și legături către `threads.net`/`threads.com`; scripturile, atributele `on*`, `style` și URL-urile `javascript:` sunt eliminate.
-- Salvare locală opțională („Ține minte lista în acest browser”, implicit oprită): se păstrează doar linkurile, în `localStorage`; la următoarea vizită apare butonul „Restaurează lista salvată”, fără nicio cerere de rețea până îl apeși. Dezactivarea șterge lista salvată.
-- Export: zona de text are acum butoane „Copiază” și „Descarcă .txt”; cardurile eșuate au buton „Reîncearcă”, legătură „Deschide pe Threads ↗” și mesaj „offline” cu reîncercare automată la reconectare; stil de tipărire (se tipărește doar firul).
-- Selector de limbă; limba implicită din setările browserului.
+## Features
 
-## Manual de utilizare
+- Adding posts by link (`threads.com` / `threads.net`, in the form `@user/post/CODE` or `t/CODE`), with strict validation and duplicate detection.
+- Each card has a remove button; requests in progress are cancelled on removal.
+- List export (one link per line, in a text area) and import: at most 50 lines per import, at most 100 posts in the thread, loading with limited concurrency; the order of the cards follows the order of the list.
+- Optional "CORS proxy" field: `https://` only, no username/password; it may contain `{url}` or receives the encoded oEmbed URL appended at the end.
+- 15-second timeout per request, with distinct error messages (CORS/network, timeout, invalid proxy, empty response).
+- The oEmbed response (and the proxy's) is treated as untrusted: it is parsed into an inert document and only the `blockquote.text-post-media` with text and links to `threads.net`/`threads.com` is kept; scripts, `on*` attributes, `style` and `javascript:` URLs are removed.
+- Optional local saving ("Remember the list in this browser", off by default): only the links are kept, in `localStorage`; on the next visit the "Restore saved list" button appears, with no network request until you press it. Turning it off deletes the saved list.
+- Export: the text area now has "Copy" and "Download .txt" buttons; failed cards have a "Retry" button, an "Open on Threads ↗" link and an "offline" message with automatic retry on reconnection; print style (only the thread is printed).
+- Language selector; the default language comes from the browser settings.
 
-1. Deschide pagina și, dacă vrei, alege limba din colțul din dreapta sus.
-2. Copiază link-ul unei postări publice de pe threads.com.
-3. Lipește-l în câmp și apasă „Adaugă" (sau Enter). Postarea apare ca un card în fir.
-4. Dacă apare o eroare de rețea/CORS, deschide „Setări avansate" și completează un proxy CORS `https://` (de preferat unul propriu).
-5. „Exportă lista" afișează link-urile într-o zonă de text; copiază-le într-un fișier. Pentru a le reîncărca, „Importă lista", lipește link-urile și „Confirmă import".
-6. Apasă × pe un card pentru a-l elimina.
+## How to use
 
-## Confidențialitate și rețea
+1. Open the page and, if you wish, choose the language from the top-right corner.
+2. Copy the link of a public post from threads.com.
+3. Paste it into the field and press "Add" (or Enter). The post appears as a card in the thread.
+4. If a network/CORS error appears, open "Advanced settings" and fill in an `https://` CORS proxy (preferably your own).
+5. "Export list" shows the links in a text area; copy them into a file. To reload them, "Import list", paste the links and "Confirm import".
+6. Press × on a card to remove it.
 
-**Fără cont ≠ fără urmărire.**
+## Privacy and network
 
-- Stocare: implicit aplicația nu folosește `localStorage`, `sessionStorage`, cookie-uri sau IndexedDB; lista există doar în memoria filei și o salvezi tu prin export. Doar dacă bifezi „Ține minte lista în acest browser”, linkurile (nu conținutul postărilor) se scriu în `localStorage` (`tfc_keep`, `tfc_list`) și se șterg la debifare.
-- Gazde contactate, doar când adaugi o postare: `graph.threads.net` (cererea oEmbed; sau proxy-ul pe care îl configurezi tu) și `www.threads.net` (scriptul `embed.js`, cod terț controlat de Meta, încărcat din adresa fixă din cod, niciodată din răspuns). `embed.js` creează apoi iframe-uri către domeniile Threads.
-- Meta vede adresa ta IP, datele browserului și postările pe care le vizualizezi. Un proxy configurat de tine vede IP-ul tău, link-urile adăugate și răspunsurile.
-- Pagina conține o politică CSP (`meta http-equiv`) care limitează scripturile la scriptul propriu (identificat prin hash SHA-256, fără `'unsafe-inline'`) și la `threads.net`/`threads.com` și cadrele la domeniile Threads. Compatibilitatea cu `embed.js` real nu a putut fi testată din mediul de dezvoltare (fără acces la rețea).
-- Aplicația nu are analitice și nu trimite date nicăieri în afara celor de mai sus. Nu cere permisiuni ale browserului.
+**No account ≠ no tracking.**
 
-## Limite și avertismente
+- Storage: by default the app uses no `localStorage`, `sessionStorage`, cookies or IndexedDB; the list exists only in the tab's memory and you save it yourself through export. Only if you tick "Remember the list in this browser" are the links (not the content of the posts) written to `localStorage` (`tfc_keep`, `tfc_list`), and they are deleted when you untick it.
+- Hosts contacted, only when you add a post: `graph.threads.net` (the oEmbed request; or the proxy you configure yourself) and `www.threads.net` (the `embed.js` script, third-party code controlled by Meta, loaded from the fixed address in the code, never from the response). `embed.js` then creates iframes pointing to the Threads domains.
+- Meta sees your IP address, your browser data and the posts you view. A proxy configured by you sees your IP, the links added and the responses.
+- The page contains a CSP policy (`meta http-equiv`) that limits scripts to its own script (identified by a SHA-256 hash, without `'unsafe-inline'`) and to `threads.net`/`threads.com`, and frames to the Threads domains. Compatibility with the real `embed.js` could not be tested from the development environment (no network access).
+- The app has no analytics and sends data nowhere other than as described above. It asks for no browser permissions.
 
-- Afirmația că oEmbed Threads funcționează fără token din 15 iunie 2026 provine din anunțul Meta („Tokenless access to Meta oEmbed APIs", blogul Meta pentru dezvoltatori, 15.06.2026); documentația veche cere încă token, iar limitele și condițiile pot diferi — verifică documentația Meta.
-- Termenii Meta permit embed-ul doar pentru afișare; aplicația nu extrage și nu păstrează conținutul postărilor.
-- Nu poate lista automat postările unui profil (Meta nu oferă acest API public).
-- Dacă închizi sau reîncarci pagina cu postări în fir, browserul cere confirmare (lista nu se salvează decât dacă ai bifat salvarea locală; altfel folosește „Exportă lista”).
-- Postările private, restricționate pe vârstă sau geo-blocate nu se afișează.
-- Browserul poate bloca cererea directă (CORS); atunci este nevoie de un proxy, cu implicațiile de confidențialitate de mai sus.
-- Dacă dai de un conținut ilegal sau dăunător, raportează-l la Meta; aplicația nu moderează nimic.
+## Limits and warnings
 
-## Rulare locală / offline
+- The claim that Threads oEmbed works without a token since 15 June 2026 comes from Meta's announcement ("Tokenless access to Meta oEmbed APIs", Meta developer blog, 15.06.2026); the old documentation still requires a token, and the limits and conditions may differ — check Meta's documentation.
+- Meta's terms allow the embed for display only; the app does not extract or keep the content of the posts.
+- It cannot automatically list a profile's posts (Meta provides no public API for this).
+- If you close or reload the page with posts in the thread, the browser asks for confirmation (the list is not saved unless you ticked local saving; otherwise use "Export list").
+- Private, age-restricted or geo-blocked posts are not displayed.
+- The browser may block the direct request (CORS); a proxy is then needed, with the privacy implications above.
+- If you come across illegal or harmful content, report it to Meta; the app moderates nothing.
 
-Descarcă `index.html` și deschide-l în browser. Fără internet nu se poate încărca nicio postare (aplicația există pentru conținut de pe internet); interfața, validarea și importul/exportul funcționează local.
+## Running locally / offline
 
-## Istoric / Changelog
+Download `index.html` and open it in a browser. Without internet no post can be loaded (the app exists for content from the internet); the interface, validation and import/export work locally.
+
+## History / Changelog
 
 ### 1.1.0 — 2026-10-14
-- Copie de rezervă și etichetare date (fff-kit).
+- Backup and data labelling (fff-kit).
 
-### 12 octombrie 2026 — versiunea 1.0.0
-- 1.0.0 — 2026-10-12: versiunea și data ultimei actualizări sunt afișate în aplicație
+### 12 October 2026 — version 1.0.0
+- 1.0.0 — 2026-10-12: the version and the date of the last update are displayed in the app
 
-### 11 octombrie 2026 (a treia trecere)
-- Carduri eșuate: mesaj distinct „ești offline” (când browserul raportează lipsa conexiunii, în 7 limbi), reîncercare automată la reconectare și legătura „Deschide pe Threads ↗” către postarea originală (se deschide doar la clic), ca să rămână utilă și fără embed. CSP: hash recalculat.
+### 11 October 2026 (third pass)
+- Failed cards: distinct "you are offline" message (when the browser reports no connection, in 7 languages), automatic retry on reconnection and the "Open on Threads ↗" link to the original post (opened only on click), so that it stays useful even without the embed. CSP: hash recalculated.
 
-### 11 octombrie 2026 (a doua trecere)
-- Salvare locală opțională a listei de linkuri (implicit oprită) cu restaurare la cerere; export cu „Copiază”/„Descarcă .txt”; „Reîncearcă” pe cardurile eșuate; stil de tipărire; texte noi în toate cele 7 limbi. CSP: hash-ul scriptului recalculat.
+### 11 October 2026 (second pass)
+- Optional local saving of the link list (off by default) with restoration on request; export with "Copy"/"Download .txt"; "Retry" on failed cards; print style; new texts in all 7 languages. CSP: script hash recalculated.
 
-### 11 octombrie 2026
-- Accesibilitate: conținutul este încadrat în `<main>`; axe-core raportează 0 încălcări la 1280 și 360 px.
-- Lista nu se mai pierde pe neașteptate: la închiderea/reîncărcarea filei cu postări în fir, browserul cere confirmare.
-- CSP: `script-src` folosește hash SHA-256 în loc de `'unsafe-inline'`.
-- README: anunțul Meta despre oEmbed fără token (15.06.2026) reconfirmat.
+### 11 October 2026
+- Accessibility: the content is wrapped in `<main>`; axe-core reports 0 violations at 1280 and 360 px.
+- The list is no longer lost unexpectedly: when closing/reloading the tab with posts in the thread, the browser asks for confirmation.
+- CSP: `script-src` uses a SHA-256 hash instead of `'unsafe-inline'`.
+- README: Meta's announcement about oEmbed without a token (15.06.2026) reconfirmed.
 
-**Surse verificate la 11.10.2026:** developers.facebook.com — „Tokenless access to Meta oEmbed APIs” (15.06.2026): Threads oEmbed fără token, limite posibil diferite.
+**Sources verified on 11.10.2026:** developers.facebook.com — "Tokenless access to Meta oEmbed APIs" (15.06.2026): Threads oEmbed without a token, limits possibly different.
 
-## Licență
+## License
 
-MIT — vezi fișierul `LICENSE`.
+MIT — see the `LICENSE` file.
 
-## Autor
+## Author
 
 Alexio — Alexandru-Ionuț Chiuță, contact: alexio@trom.tf
 
-## English summary
+## Summary
 
 Threads fără cont ("Threads without an account") is a single-file viewer for public Threads posts, in 7 languages. You paste individual post links; it fetches Meta's oEmbed (optionally via your own HTTPS CORS proxy) and renders a sanitised embed. The oEmbed response is never injected raw. No account, no analytics, no browser storage, but Meta sees your IP and the posts you view, and loads its own embed.js. License: MIT (see LICENSE).
