@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · **Magyar**
 
-**Verzió:** 1.2.1 · **Utolsó frissítés:** 2026-10-22
+**Verzió:** 1.2.2 · **Utolsó frissítés:** 2026-10-22
 
 A felület nyelvei: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -62,6 +62,9 @@ Egy „szál”, amelyet kézzel építesz fel nyilvános Threads-bejegyzésekre
 Töltsd le az `index.html` fájlt, és nyisd meg egy böngészőben. Internet nélkül egyetlen bejegyzés sem tölthető be (az alkalmazás az internetes tartalomhoz létezik); a felület, az ellenőrzés és az import/export helyben működik.
 
 ## Előzmények / Changelog
+
+### 1.2.2 — 2026-10-22
+- fff-kit 1.1.2: PBKDF2 600 000 iterációval, clickjacking elleni védelem
 
 ### 1.2.1 — 2026-10-22
 - Click-to-load a harmadik fél szkriptjéhez: a Metától lekért bejegyzésszöveg egyszerű szövegként és hivatkozásokként jelenik meg; a Meta embed.js-e csak a „Megjelenítés a Meta beágyazásával” gomb után töltődik be a threads.net-ről.

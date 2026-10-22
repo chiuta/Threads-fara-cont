@@ -2,7 +2,7 @@
 
 **English** · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version:** 1.2.1 · **Last updated:** 2026-10-22
+**Version:** 1.2.2 · **Last updated:** 2026-10-22
 
 Interface languages: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -62,6 +62,9 @@ A "thread" built by hand from links to public Threads posts. The app requests th
 Download `index.html` and open it in a browser. Without internet no post can be loaded (the app exists for content from the internet); the interface, validation and import/export work locally.
 
 ## History / Changelog
+
+### 1.2.2 — 2026-10-22
+- fff-kit 1.1.2: PBKDF2 600,000 iterations, anti-clickjacking protection
 
 ### 1.2.1 — 2026-10-22
 - Click-to-load for the third-party script: the post text fetched from Meta is shown as plain text and links; Meta's embed.js is loaded from threads.net only after you press "Show with the Meta embed".
