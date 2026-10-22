@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · **Français** · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version :** 1.2.2 · **Dernière mise à jour :** 2026-10-22
+**Version :** 1.2.3 · **Dernière mise à jour :** 2026-10-22
 
 Langues de l'interface : **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -62,6 +62,10 @@ Un « fil » construit à la main à partir de liens vers des publications Threa
 Téléchargez `index.html` et ouvrez-le dans un navigateur. Sans internet, aucune publication ne peut être chargée (l'application existe pour du contenu d'internet) ; l'interface, la validation et l'import/export fonctionnent localement.
 
 ## Historique / Changelog
+
+### 1.2.3 — 2026-10-22
+
+fff-kit 1.1.4 : cibles tactiles et taille de texte minimale.
 
 ### 1.2.2 — 2026-10-22
 - fff-kit 1.1.2 : PBKDF2 à 600 000 itérations, protection anti-clickjacking

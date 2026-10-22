@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · **Español** · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versión:** 1.2.2 · **Última actualización:** 2026-10-22
+**Versión:** 1.2.3 · **Última actualización:** 2026-10-22
 
 Idiomas de la interfaz: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -62,6 +62,10 @@ Un «hilo» construido a mano a partir de enlaces a publicaciones públicas de T
 Descarga `index.html` y ábrelo en un navegador. Sin internet no se puede cargar ninguna publicación (la aplicación existe para contenido de internet); la interfaz, la validación y la importación/exportación funcionan en local.
 
 ## Historial / Changelog
+
+### 1.2.3 — 2026-10-22
+
+fff-kit 1.1.4: objetivos táctiles y tamaño mínimo de texto.
 
 ### 1.2.2 — 2026-10-22
 - fff-kit 1.1.2: PBKDF2 con 600.000 iteraciones, protección anti-clickjacking
