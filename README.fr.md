@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · **Français** · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version :** 1.2.0 · **Dernière mise à jour :** 2026-10-19
+**Version :** 1.2.1 · **Dernière mise à jour :** 2026-10-22
 
 Langues de l'interface : **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -62,6 +62,11 @@ Un « fil » construit à la main à partir de liens vers des publications Threa
 Téléchargez `index.html` et ouvrez-le dans un navigateur. Sans internet, aucune publication ne peut être chargée (l'application existe pour du contenu d'internet) ; l'interface, la validation et l'import/export fonctionnent localement.
 
 ## Historique / Changelog
+
+### 1.2.1 — 2026-10-22
+- Click-to-load pour le script tiers : le texte de la publication récupéré chez Meta s'affiche en texte et liens simples ; embed.js de Meta n'est chargé depuis threads.net qu'après « Afficher avec l'embed Meta ».
+- Nouvel export « Télécharger .json » avec URL, auteur et date d'ajout pour chaque publication.
+- Mobile : aucun texte sous 12 px et cibles tactiles d'au moins 24 px (WCAG 2.5.8).
 
 ### 1.1.0 — 2026-10-14
 - Sauvegarde et étiquetage des données (fff-kit).

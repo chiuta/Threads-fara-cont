@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · **Italiano** · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versione:** 1.2.0 · **Ultimo aggiornamento:** 2026-10-19
+**Versione:** 1.2.1 · **Ultimo aggiornamento:** 2026-10-22
 
 Lingue dell'interfaccia: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -62,6 +62,11 @@ Un «filo» costruito a mano da link a post pubblici di Threads. L'app richiede 
 Scarica `index.html` e aprilo in un browser. Senza internet non si può caricare nessun post (l'app esiste per contenuti da internet); l'interfaccia, la validazione e l'importazione/esportazione funzionano in locale.
 
 ## Cronologia / Changelog
+
+### 1.2.1 — 2026-10-22
+- Click-to-load per lo script di terzi: il testo del post ottenuto da Meta appare come testo e link semplici; embed.js di Meta viene caricato da threads.net solo dopo «Mostra con l'embed di Meta».
+- Nuova esportazione «Scarica .json» con URL, autore e data di aggiunta per ogni post.
+- Mobile: nessun testo sotto i 12 px e aree tattili di almeno 24 px (WCAG 2.5.8).
 
 ### 1.1.0 — 2026-10-14
 - Copia di sicurezza ed etichettatura dei dati (fff-kit).

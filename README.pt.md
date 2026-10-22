@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · **Português** · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versão:** 1.2.0 · **Última atualização:** 2026-10-19
+**Versão:** 1.2.1 · **Última atualização:** 2026-10-22
 
 Idiomas da interface: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -62,6 +62,11 @@ Um «fio» construído manualmente a partir de ligações para publicações pú
 Descarregue `index.html` e abra-o num navegador. Sem internet não é possível carregar nenhuma publicação (a aplicação existe para conteúdo da internet); a interface, a validação e a importação/exportação funcionam localmente.
 
 ## Histórico / Changelog
+
+### 1.2.1 — 2026-10-22
+- Click-to-load para o script de terceiros: o texto da publicação obtido da Meta aparece como texto e ligações simples; o embed.js da Meta só é carregado de threads.net depois de premir «Mostrar com o embed da Meta».
+- Nova exportação «Transferir .json» com URL, autor e data de adição de cada publicação.
+- Telemóvel: nenhum texto abaixo de 12 px e áreas táteis de pelo menos 24 px (WCAG 2.5.8).
 
 ### 1.1.0 — 2026-10-14
 - Cópia de segurança e etiquetagem de dados (fff-kit).

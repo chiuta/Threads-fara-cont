@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · **Deutsch** · [Magyar](README.hu.md)
 
-**Version:** 1.2.0 · **Zuletzt aktualisiert:** 2026-10-19
+**Version:** 1.2.1 · **Zuletzt aktualisiert:** 2026-10-22
 
 Oberflächensprachen: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -62,6 +62,11 @@ Ein „Faden“, von Hand aus Links zu öffentlichen Threads-Beiträgen aufgebau
 Laden Sie `index.html` herunter und öffnen Sie sie in einem Browser. Ohne Internet kann kein Beitrag geladen werden (die Anwendung existiert für Inhalte aus dem Internet); die Oberfläche, die Validierung und der Import/Export funktionieren lokal.
 
 ## Verlauf / Changelog
+
+### 1.2.1 — 2026-10-22
+- Click-to-load für das Fremdskript: Der von Meta geholte Beitragstext erscheint als einfacher Text mit Links; Metas embed.js wird erst nach „Mit dem Meta-Embed anzeigen“ von threads.net geladen.
+- Neuer Export „JSON herunterladen“ mit URL, Autor und Hinzufügedatum je Beitrag.
+- Mobil: kein Text unter 12 px und Touch-Ziele von mindestens 24 px (WCAG 2.5.8).
 
 ### 1.1.0 — 2026-10-14
 - Sicherungskopie und Datenkennzeichnung (fff-kit).

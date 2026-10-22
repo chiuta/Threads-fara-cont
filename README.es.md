@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · **Español** · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versión:** 1.2.0 · **Última actualización:** 2026-10-19
+**Versión:** 1.2.1 · **Última actualización:** 2026-10-22
 
 Idiomas de la interfaz: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -62,6 +62,11 @@ Un «hilo» construido a mano a partir de enlaces a publicaciones públicas de T
 Descarga `index.html` y ábrelo en un navegador. Sin internet no se puede cargar ninguna publicación (la aplicación existe para contenido de internet); la interfaz, la validación y la importación/exportación funcionan en local.
 
 ## Historial / Changelog
+
+### 1.2.1 — 2026-10-22
+- Click-to-load para el script de terceros: el texto de la publicación obtenido de Meta se muestra como texto y enlaces simples; embed.js de Meta se carga desde threads.net solo tras pulsar «Mostrar con el embed de Meta».
+- Nueva exportación «Descargar .json» con URL, autor y fecha de adición de cada publicación.
+- Móvil: ningún texto por debajo de 12 px y áreas táctiles de al menos 24 px (WCAG 2.5.8).
 
 ### 1.1.0 — 2026-10-14
 - Copia de seguridad y etiquetado de datos (fff-kit).

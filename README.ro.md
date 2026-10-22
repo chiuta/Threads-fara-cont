@@ -2,7 +2,7 @@
 
 [English](README.md) · **Română** · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versiune:** 1.2.0 · **Ultima actualizare:** 2026-10-19
+**Versiune:** 1.2.1 · **Ultima actualizare:** 2026-10-22
 
 Limbile interfeței: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -62,6 +62,11 @@ Un „fir" construit manual din link-uri către postări Threads publice. Aplica
 Descarcă `index.html` și deschide-l în browser. Fără internet nu se poate încărca nicio postare (aplicația există pentru conținut de pe internet); interfața, validarea și importul/exportul funcționează local.
 
 ## Istoric / Changelog
+
+### 1.2.1 — 2026-10-22
+- Click-to-load pentru scriptul terț: textul postării adus de la Meta apare ca text și linkuri simple; embed.js de la Meta se încarcă din threads.net abia după ce apeși „Afișează cu embed-ul Meta”.
+- Export nou „Descarcă .json” cu URL, autor și data adăugării pentru fiecare postare.
+- Mobil: niciun text sub 12 px și ținte tactile de cel puțin 24 px (WCAG 2.5.8).
 
 ### 1.1.0 — 2026-10-14
 - Copie de rezervă și etichetare date (fff-kit).
