@@ -2,8 +2,8 @@
   "schema": 1,
   "slug": "threads-fara-cont",
   "name": "Threads fără cont",
-  "version": "1.2.4",
-  "updated": "2026-10-23",
+  "version": "1.2.5",
+  "updated": "2026-10-26",
   "description": "Vizualizator de postări publice Threads, fără cont, prin embed-ul oficial Meta. 8 limbi. Fără analitice; conținutul embed se încarcă de la Meta.",
   "egress": [
     {
@@ -51,8 +51,8 @@
     "localStorage"
   ],
   "storageKeys": [],
-  "sizeBytes": 219433,
-  "sha256": "570a3001cc950e1bd1b898a1e9456d5bcee58c03cafc237b45599931689169a4",
+  "sizeBytes": 219616,
+  "sha256": "7f714ebdd8d8cf9ee64216f7144bfe3b98d35b3eb3381ac3296d1e37fa3a833b",
   "csp": {
     "present": true,
     "directives": {
@@ -107,5 +107,11 @@
       "bundle"
     ]
   },
-  "selfSerializing": false
+  "selfSerializing": false,
+  "exceptions": [
+    {
+      "rule": "cdn-without-sri",
+      "reason": "embed.js oficial Threads/Meta este dinamic și nu poate avea SRI; se încarcă doar la cererea utilizatorului, în iframe izolat."
+    }
+  ]
 }

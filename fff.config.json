@@ -1,0 +1,1 @@
+{"exceptions":[{"rule":"cdn-without-sri","reason":"embed.js oficial Threads/Meta este dinamic și nu poate avea SRI; se încarcă doar la cererea utilizatorului, în iframe izolat."}]}
