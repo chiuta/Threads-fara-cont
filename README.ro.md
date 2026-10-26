@@ -2,7 +2,7 @@
 
 [English](README.md) · **Română** · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versiune:** 1.2.5 · **Ultima actualizare:** 2026-10-26
+**Versiune:** 2.0.0 · **Ultima actualizare:** 2026-10-26
 
 Limbile interfeței: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -27,6 +27,7 @@ Un „fir" construit manual din link-uri către postări Threads publice. Aplica
 - Salvare locală opțională („Ține minte lista în acest browser”, implicit oprită): se păstrează doar linkurile, în `localStorage`; la următoarea vizită apare butonul „Restaurează lista salvată”, fără nicio cerere de rețea până îl apeși. Dezactivarea șterge lista salvată.
 - Export: zona de text are acum butoane „Copiază” și „Descarcă .txt”; cardurile eșuate au buton „Reîncearcă”, legătură „Deschide pe Threads ↗” și mesaj „offline” cu reîncercare automată la reconectare; stil de tipărire (se tipărește doar firul).
 - Selector de limbă; limba implicită din setările browserului.
+- **Arhivă de fire (2.0.0):** lipești textul unui fir public și îl salvezi local (doar la „Salvează”, în `localStorage`) cu autor, link, data postării și data arhivării. Citare în formatele simplu / APA 7 / MLA 9 / Chicago, căutare în arhivă, export Markdown (cu frontmatter), linkuri de arhivare (Wayback, archive.today) și „Verifică dacă mai există” (oEmbed Meta). Nu se descarcă nimic de pe Threads.
 
 ## Manual de utilizare
 

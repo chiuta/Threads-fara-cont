@@ -2,7 +2,7 @@
 
 **English** · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version:** 1.2.5 · **Last updated:** 2026-10-26
+**Version:** 2.0.0 · **Last updated:** 2026-10-26
 
 Interface languages: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -27,6 +27,7 @@ A "thread" built by hand from links to public Threads posts. The app requests th
 - Optional local saving ("Remember the list in this browser", off by default): only the links are kept, in `localStorage`; on the next visit the "Restore saved list" button appears, with no network request until you press it. Turning it off deletes the saved list.
 - Export: the text area now has "Copy" and "Download .txt" buttons; failed cards have a "Retry" button, an "Open on Threads ↗" link and an "offline" message with automatic retry on reconnection; print style (only the thread is printed).
 - Language selector; the default language comes from the browser settings.
+- **Thread archive (2.0.0):** paste the text of a public thread and save it locally (only on “Save”, in `localStorage`) with author, link, post date and archive date. Citations in simple / APA 7 / MLA 9 / Chicago, archive search, Markdown export (with frontmatter), archiving links (Wayback, archive.today) and “Check if it still exists” (Meta oEmbed). Nothing is downloaded from Threads.
 
 ## How to use
 
