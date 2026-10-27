@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · **Magyar**
 
-**Verzió:** 2.1.0 · **Utolsó frissítés:** 2026-10-27
+**Verzió:** 2.2.0 · **Utolsó frissítés:** 2026-10-27
 
 A felület nyelvei: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -36,6 +36,16 @@ Egy „szál”, amelyet kézzel építesz fel nyilvános Threads-bejegyzésekre
 4. Ha hálózati/CORS-hiba jelenik meg, nyisd meg a „Speciális beállításokat”, és add meg egy `https://` CORS-proxyt (lehetőleg a sajátodat).
 5. A „Lista exportálása” egy szövegmezőben mutatja a hivatkozásokat; másold őket egy fájlba. Újratöltésükhöz „Lista importálása”, illeszd be a hivatkozásokat, majd „Import megerősítése”.
 6. Egy kártya eltávolításához nyomd meg rajta a × jelet.
+
+## Opcionális CORS-proxy (2.1.0)
+
+Ha a böngésző blokkolja a `graph.threads.net` felé küldött közvetlen kérést (CORS), futtathatod a **saját** proxyd. A [`proxy/cloudflare-worker.js`](proxy/cloudflare-worker.js) egy függőségmentes Worker (kb. 60 sor), amely **kizárólag** a `https://graph.threads.net/v1.0/oembed` címre továbbít Threads-bejegyzéshivatkozásokhoz, csak egy engedélyezett eredetnek válaszol (`ALLOWED_ORIGIN` változó, alapértelmezés `https://chiuta.github.io`), nem naplóz, és nem küldi el a sütijeidet a Metának. A „Speciális beállítások → CORS-proxy” mezőbe írd be: `https://a-te-workered.workers.dev/?url=`.
+
+**Állapot: kísérleti.** A logikát szimulált `fetch`-csel teszteltük (`tests/export-proxy.test.mjs`); **nem** telepítettük és nem teszteltük valódi Cloudflare-fiókon, sem a Meta valódi végpontja ellen. A proxy látja az IP-címedet és a hozzáadott hivatkozásokat: csak akkor futtasd, ha te irányítod. Szándékosan nincs beépítve az `index.html`-be (az alkalmazás egyetlen fájl marad, saját szerver nélkül).
+
+Exportok: a `.txt` és `.json` hivatkozáslista mellett a 2.1.0 hozzáadja a `.md`-t (soronként egy hivatkozás Markdown-listaként; a bejegyzések tartalmát nem tároljuk, ezért nem is exportáljuk).
+
+_Gépi fordítás, anyanyelvi beszélő nem ellenőrizte._
 
 ## Adatvédelem és hálózat
 

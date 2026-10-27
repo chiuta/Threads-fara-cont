@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · **Español** · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versión:** 2.1.0 · **Última actualización:** 2026-10-27
+**Versión:** 2.2.0 · **Última actualización:** 2026-10-27
 
 Idiomas de la interfaz: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -36,6 +36,16 @@ Un «hilo» construido a mano a partir de enlaces a publicaciones públicas de T
 4. Si aparece un error de red/CORS, abre «Ajustes avanzados» y rellena un proxy CORS `https://` (de preferencia uno propio).
 5. «Exportar la lista» muestra los enlaces en un área de texto; cópialos en un archivo. Para volver a cargarlos, «Importar la lista», pega los enlaces y «Confirmar importación».
 6. Pulsa × en una tarjeta para eliminarla.
+
+## Proxy CORS opcional (2.1.0)
+
+Si el navegador bloquea la petición directa a `graph.threads.net` (CORS), puedes ejecutar **tu propio** proxy. [`proxy/cloudflare-worker.js`](proxy/cloudflare-worker.js) es un Worker sin dependencias (unas 60 líneas) que reenvía **solo** `https://graph.threads.net/v1.0/oembed` para enlaces de publicaciones de Threads, responde únicamente a un origen permitido (variable `ALLOWED_ORIGIN`, por defecto `https://chiuta.github.io`), no guarda registros y no envía tus cookies a Meta. En «Ajustes avanzados → Proxy CORS» escribe `https://tu-worker.workers.dev/?url=`.
+
+**Estado: experimental.** La lógica se prueba con un `fetch` simulado (`tests/export-proxy.test.mjs`); **no** se ha desplegado ni probado en una cuenta real de Cloudflare, ni contra el endpoint real de Meta. Un proxy ve tu IP y los enlaces que añades: ejecútalo solo si lo controlas. No está incluido en `index.html` a propósito (la app sigue siendo un único archivo, sin servidor nuestro).
+
+Exportaciones: además de la lista de enlaces en `.txt` y `.json`, la 2.1.0 añade `.md` (un enlace por línea como lista Markdown; el contenido de las publicaciones no se guarda, así que no se exporta).
+
+_Traducción automática, no revisada por un hablante nativo._
 
 ## Privacidad y red
 

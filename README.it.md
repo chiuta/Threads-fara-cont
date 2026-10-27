@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · **Italiano** · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versione:** 2.1.0 · **Ultimo aggiornamento:** 2026-10-27
+**Versione:** 2.2.0 · **Ultimo aggiornamento:** 2026-10-27
 
 Lingue dell'interfaccia: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -36,6 +36,16 @@ Un «filo» costruito a mano da link a post pubblici di Threads. L'app richiede 
 4. Se compare un errore di rete/CORS, apri «Impostazioni avanzate» e inserisci un proxy CORS `https://` (meglio uno tuo).
 5. «Esporta la lista» mostra i link in un'area di testo; copiali in un file. Per ricaricarli, «Importa la lista», incolla i link e «Conferma l'importazione».
 6. Premi × su una scheda per rimuoverla.
+
+## Proxy CORS facoltativo (2.1.0)
+
+Se il browser blocca la richiesta diretta a `graph.threads.net` (CORS), puoi eseguire un proxy **tuo**. [`proxy/cloudflare-worker.js`](proxy/cloudflare-worker.js) è un Worker senza dipendenze (circa 60 righe) che inoltra **solo** `https://graph.threads.net/v1.0/oembed` per i link dei post di Threads, risponde a una sola origine consentita (variabile `ALLOWED_ORIGIN`, predefinita `https://chiuta.github.io`), non tiene log e non invia i tuoi cookie a Meta. In «Impostazioni avanzate → Proxy CORS» inserisci `https://il-tuo-worker.workers.dev/?url=`.
+
+**Stato: sperimentale.** La logica è testata con un `fetch` simulato (`tests/export-proxy.test.mjs`); **non** è stata distribuita né provata su un vero account Cloudflare, né sul vero endpoint di Meta. Un proxy vede il tuo IP e i link che aggiungi: eseguilo solo se lo controlli. Non è incluso in `index.html` di proposito (l’app resta un file unico, senza un nostro server).
+
+Esportazioni: oltre all’elenco dei link in `.txt` e `.json`, la 2.1.0 aggiunge `.md` (un link per riga come elenco Markdown; il contenuto dei post non viene conservato, quindi non viene esportato).
+
+_Traduzione automatica, non verificata da madrelingua._
 
 ## Riservatezza e rete
 
