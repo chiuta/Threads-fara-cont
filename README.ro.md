@@ -2,7 +2,9 @@
 
 [English](README.md) · **Română** · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versiune:** 2.0.0 · **Ultima actualizare:** 2026-10-26
+**Versiune:** 2.1.0 · **Ultima actualizare:** 2026-10-27
+
+**Stare:** stabil. **Offline:** nu — postările se încarcă de la Meta (graph.threads.net, embed.js) doar când le adaugi; interfața, importul/exportul și arhiva locală funcționează fără internet.
 
 Limbile interfeței: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -38,6 +40,14 @@ Un „fir" construit manual din link-uri către postări Threads publice. Aplica
 5. „Exportă lista" afișează link-urile într-o zonă de text; copiază-le într-un fișier. Pentru a le reîncărca, „Importă lista", lipește link-urile și „Confirmă import".
 6. Apasă × pe un card pentru a-l elimina.
 
+## Proxy CORS opțional (2.1.0)
+
+Dacă browserul blochează cererea directă către `graph.threads.net` (CORS), poți rula **propriul** proxy. [`proxy/cloudflare-worker.js`](proxy/cloudflare-worker.js) este un Worker fără dependențe (circa 60 de linii) care retransmite **doar** `https://graph.threads.net/v1.0/oembed` pentru linkuri de postări Threads, răspunde unei singure origini permise (variabila `ALLOWED_ORIGIN`, implicit `https://chiuta.github.io`), nu păstrează jurnale și nu trimite cookie-urile tale către Meta. În „Setări avansate → Proxy CORS” introdu `https://worker-ul-tau.workers.dev/?url=`.
+
+**Stare: experimental.** Logica este testată cu un `fetch` simulat (`tests/export-proxy.test.mjs`); **nu** a fost implementată și testată pe un cont Cloudflare real, nici față de endpoint-ul real Meta. Un proxy vede IP-ul tău și linkurile adăugate: rulează-l doar dacă îl controlezi. Nu este inclus în `index.html` intenționat (aplicația rămâne un singur fișier, fără server al nostru); CSP-ul paginii permite deja conexiuni `https:`, dar nu `http://localhost`.
+
+Exporturi: pe lângă lista de linkuri ca `.txt` și `.json`, 2.1.0 adaugă `.md` (un link pe linie, ca listă Markdown; conținutul postărilor nu este păstrat, deci nu se exportă). Arhiva locală exporta deja Markdown.
+
 ## Confidențialitate și rețea
 
 **Fără cont ≠ fără urmărire.**
@@ -63,6 +73,9 @@ Un „fir" construit manual din link-uri către postări Threads publice. Aplica
 Descarcă `index.html` și deschide-l în browser. Fără internet nu se poate încărca nicio postare (aplicația există pentru conținut de pe internet); interfața, validarea și importul/exportul funcționează local.
 
 ## Istoric / Changelog
+
+### 2.1.0 — 2026-10-27
+- „Descarcă .md” pentru lista de linkuri, `proxy/cloudflare-worker.js` opțional (experimental), linii Stare/Offline, `CHANGELOG.md`. Anterior: v2.0.0.
 
 ### 1.2.3 — 2026-10-22
 
