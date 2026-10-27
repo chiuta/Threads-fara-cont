@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · **Deutsch** · [Magyar](README.hu.md)
 
-**Version:** 2.1.0 · **Zuletzt aktualisiert:** 2026-10-27
+**Version:** 2.2.0 · **Zuletzt aktualisiert:** 2026-10-27
 
 Oberflächensprachen: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -36,6 +36,16 @@ Ein „Faden“, von Hand aus Links zu öffentlichen Threads-Beiträgen aufgebau
 4. Erscheint ein Netzwerk-/CORS-Fehler, öffnen Sie „Erweiterte Einstellungen“ und tragen Sie einen `https://`-CORS-Proxy ein (am besten einen eigenen).
 5. „Liste exportieren“ zeigt die Links in einem Textfeld; kopieren Sie sie in eine Datei. Zum erneuten Laden „Liste importieren“, die Links einfügen und „Import bestätigen“.
 6. Drücken Sie × auf einer Karte, um sie zu entfernen.
+
+## Optionaler CORS-Proxy (2.1.0)
+
+Blockiert der Browser die direkte Anfrage an `graph.threads.net` (CORS), können Sie **Ihren eigenen** Proxy betreiben. [`proxy/cloudflare-worker.js`](proxy/cloudflare-worker.js) ist ein abhängigkeitsfreier Worker (rund 60 Zeilen), der **nur** `https://graph.threads.net/v1.0/oembed` für Threads-Beitragslinks weiterleitet, nur einer erlaubten Origin antwortet (Variable `ALLOWED_ORIGIN`, Standard `https://chiuta.github.io`), keine Protokolle führt und keine Ihrer Cookies an Meta sendet. Tragen Sie unter „Erweiterte Einstellungen → CORS-Proxy“ `https://ihr-worker.workers.dev/?url=` ein.
+
+**Status: experimentell.** Die Logik wird mit einem simulierten `fetch` getestet (`tests/export-proxy.test.mjs`); sie wurde **nicht** auf einem echten Cloudflare-Konto bereitgestellt oder getestet, ebenso nicht gegen den echten Meta-Endpunkt. Ein Proxy sieht Ihre IP und die hinzugefügten Links: Betreiben Sie ihn nur, wenn Sie ihn kontrollieren. Er ist absichtlich nicht in `index.html` enthalten (die App bleibt eine einzelne Datei ohne eigenen Server).
+
+Exporte: Zusätzlich zur Linkliste als `.txt` und `.json` bringt 2.1.0 `.md` (ein Link pro Zeile als Markdown-Liste; der Inhalt der Beiträge wird nicht gespeichert und daher nicht exportiert).
+
+_Automatische Übersetzung, nicht von Muttersprachlern geprüft._
 
 ## Datenschutz und Netzwerk
 

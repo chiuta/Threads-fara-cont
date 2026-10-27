@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · **Français** · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version :** 2.1.0 · **Dernière mise à jour :** 2026-10-27
+**Version :** 2.2.0 · **Dernière mise à jour :** 2026-10-27
 
 Langues de l'interface : **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -36,6 +36,16 @@ Un « fil » construit à la main à partir de liens vers des publications Threa
 4. Si une erreur réseau/CORS apparaît, ouvrez « Paramètres avancés » et renseignez un proxy CORS `https://` (de préférence le vôtre).
 5. « Exporter la liste » affiche les liens dans une zone de texte ; copiez-les dans un fichier. Pour les recharger, « Importer la liste », collez les liens et « Confirmer l'import ».
 6. Appuyez sur × sur une carte pour la supprimer.
+
+## Proxy CORS facultatif (2.1.0)
+
+Si le navigateur bloque la requête directe vers `graph.threads.net` (CORS), vous pouvez exécuter **votre propre** proxy. [`proxy/cloudflare-worker.js`](proxy/cloudflare-worker.js) est un Worker sans dépendances (environ 60 lignes) qui transmet **uniquement** `https://graph.threads.net/v1.0/oembed` pour les liens de publications Threads, ne répond qu’à une origine autorisée (variable `ALLOWED_ORIGIN`, par défaut `https://chiuta.github.io`), ne garde aucun journal et n’envoie aucun de vos cookies à Meta. Dans « Paramètres avancés → Proxy CORS », saisissez `https://votre-worker.workers.dev/?url=`.
+
+**Statut : expérimental.** La logique est testée avec un `fetch` simulé (`tests/export-proxy.test.mjs`) ; elle n’a **pas** été déployée ni testée sur un vrai compte Cloudflare, ni face au vrai point de terminaison de Meta. Un proxy voit votre IP et les liens que vous ajoutez : ne l’exécutez que si vous le contrôlez. Il n’est volontairement pas intégré à `index.html` (l’application reste un fichier unique, sans serveur à nous).
+
+Exports : en plus de la liste de liens en `.txt` et `.json`, la 2.1.0 ajoute `.md` (un lien par ligne, en liste Markdown ; le contenu des publications n’est pas conservé, donc pas exporté).
+
+_Traduction automatique, non vérifiée par un locuteur natif._
 
 ## Confidentialité et réseau
 

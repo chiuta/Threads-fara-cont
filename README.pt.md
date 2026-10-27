@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · **Português** · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versão:** 2.1.0 · **Última atualização:** 2026-10-27
+**Versão:** 2.2.0 · **Última atualização:** 2026-10-27
 
 Idiomas da interface: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -36,6 +36,16 @@ Um «fio» construído manualmente a partir de ligações para publicações pú
 4. Se surgir um erro de rede/CORS, abra «Definições avançadas» e preencha um proxy CORS `https://` (de preferência um seu).
 5. «Exportar a lista» mostra as ligações numa área de texto; copie-as para um ficheiro. Para as recarregar, «Importar a lista», cole as ligações e «Confirmar importação».
 6. Prima × num cartão para o remover.
+
+## Proxy CORS opcional (2.1.0)
+
+Se o navegador bloquear o pedido direto a `graph.threads.net` (CORS), pode executar o **seu próprio** proxy. [`proxy/cloudflare-worker.js`](proxy/cloudflare-worker.js) é um Worker sem dependências (cerca de 60 linhas) que reencaminha **apenas** `https://graph.threads.net/v1.0/oembed` para ligações de publicações do Threads, responde só a uma origem permitida (variável `ALLOWED_ORIGIN`, por omissão `https://chiuta.github.io`), não guarda registos e não envia os seus cookies à Meta. Em «Definições avançadas → Proxy CORS» introduza `https://o-seu-worker.workers.dev/?url=`.
+
+**Estado: experimental.** A lógica é testada com um `fetch` simulado (`tests/export-proxy.test.mjs`); **não** foi implementada nem testada numa conta Cloudflare real, nem contra o endpoint real da Meta. Um proxy vê o seu IP e as ligações que adiciona: execute-o apenas se o controlar. Não está incluído em `index.html` de propósito (a aplicação continua a ser um único ficheiro, sem servidor nosso).
+
+Exportações: além da lista de ligações em `.txt` e `.json`, a 2.1.0 acrescenta `.md` (uma ligação por linha como lista Markdown; o conteúdo das publicações não é guardado, por isso não é exportado).
+
+_Tradução automática, não verificada por um falante nativo._
 
 ## Privacidade e rede
 
