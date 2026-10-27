@@ -2,7 +2,9 @@
 
 **English** · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version:** 2.0.0 · **Last updated:** 2026-10-26
+**Version:** 2.1.0 · **Last updated:** 2026-10-27
+
+**Status:** stable. **Offline:** no — posts load from Meta (graph.threads.net, embed.js) only when you add them; the interface, import/export and the local archive work without internet.
 
 Interface languages: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -38,6 +40,14 @@ A "thread" built by hand from links to public Threads posts. The app requests th
 5. "Export list" shows the links in a text area; copy them into a file. To reload them, "Import list", paste the links and "Confirm import".
 6. Press × on a card to remove it.
 
+## Optional CORS proxy (2.1.0)
+
+If the browser blocks the direct request to `graph.threads.net` (CORS), you can run **your own** proxy. [`proxy/cloudflare-worker.js`](proxy/cloudflare-worker.js) is a dependency-free Worker (about 60 lines) that forwards **only** `https://graph.threads.net/v1.0/oembed` for Threads post links, answers only to one allowed origin (variable `ALLOWED_ORIGIN`, default `https://chiuta.github.io`), keeps no logs and sends none of your cookies to Meta. In “Advanced settings → CORS proxy” enter `https://your-worker.workers.dev/?url=`.
+
+**Status: experimental.** The logic is tested with a simulated `fetch` (`tests/export-proxy.test.mjs`); it has **not** been deployed or tested on a real Cloudflare account, nor against the live Meta endpoint. A proxy sees your IP and the links you add: run it only if you control it. It is not bundled in `index.html` on purpose (the app stays a single file with no server of ours); the page’s CSP already allows `https:` connections, but not `http://localhost`.
+
+Exports: besides the link list as `.txt` and `.json`, 2.1.0 adds `.md` (one link per line as a Markdown list; the content of the posts is not kept, so it is not exported). The local archive already exported Markdown.
+
 ## Privacy and network
 
 **No account ≠ no tracking.**
@@ -63,6 +73,9 @@ A "thread" built by hand from links to public Threads posts. The app requests th
 Download `index.html` and open it in a browser. Without internet no post can be loaded (the app exists for content from the internet); the interface, validation and import/export work locally.
 
 ## History / Changelog
+
+### 2.1.0 — 2026-10-27
+- “Download .md” for the link list, optional `proxy/cloudflare-worker.js` (experimental), status/offline lines, `CHANGELOG.md`. Previously: v2.0.0.
 
 ### 1.2.3 — 2026-10-22
 

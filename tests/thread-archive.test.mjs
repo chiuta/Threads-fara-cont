@@ -1,4 +1,4 @@
-// Teste v2.0.0: arhivă de fire (salvare locală cu atribuire, formate de citare, căutare, export Markdown, verificare existență).
+// Teste v2.1.0: arhivă de fire (salvare locală cu atribuire, formate de citare, căutare, export Markdown, verificare existență).
 import {createRequire as __fffCR} from 'node:module';
 import {readFileSync as __fffRF} from 'node:fs';
 import {createRequire} from 'module';
