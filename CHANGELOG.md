@@ -2,6 +2,12 @@
 
 Format SemVer (MAJOR.MINOR.PATCH).
 
+## 2.2.1 — 2026-11-02
+
+### Surse actualizate (runda 2, verificat la 2026-11-02)
+- Scriptul de încorporare se încarcă acum de la `https://www.threads.com/embed.js` (documentația Meta „Embed a Threads Post”); CSP-ul permitea deja `www.threads.com`.
+- `graph.threads.net` rămâne neschimbat: jurnalul de modificări Meta (6 iunie 2025) spune că API-ul Threads poate fi accesat atât prin `graph.threads.com`, cât și prin `graph.threads.net`.
+
 ## 2.2.0 — 2026-10-27
 
 Anterior: v2.1.0. Codul aplicației nu s-a schimbat (doar versiunea); se completează documentația.
