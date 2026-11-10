@@ -2,8 +2,8 @@
   "schema": 1,
   "slug": "threads-fara-cont",
   "name": "Threads fără cont",
-  "version": "2.2.3",
-  "updated": "2026-11-08",
+  "version": "2.2.4",
+  "updated": "2026-11-10",
   "description": "Vizualizator de postări publice Threads, fără cont, prin embed-ul oficial Meta. 8 limbi. Fără analitice; conținutul embed se încarcă de la Meta.",
   "egress": [
     {
@@ -51,8 +51,8 @@
     "localStorage"
   ],
   "storageKeys": [],
-  "sizeBytes": 412412,
-  "sha256": "c2afb7e8d1b7253a31835a504e1b409bdce05bec380fb850ffdd6a35ae7c11ef",
+  "sizeBytes": 433544,
+  "sha256": "c77be77843d94f24718b85dcc8bcaaab1cd0db9e877beb5ddb9dfc8968364d13",
   "csp": {
     "present": true,
     "directives": {
@@ -94,6 +94,7 @@
       "store",
       "dialog",
       "exit",
+      "view",
       "label",
       "bundle",
       "qr",
@@ -103,12 +104,13 @@
     ]
   },
   "kit": {
-    "version": "1.3.0",
+    "version": "1.4.0",
     "modules": [
       "core",
       "store",
       "dialog",
       "exit",
+      "view",
       "label",
       "bundle",
       "qr",
