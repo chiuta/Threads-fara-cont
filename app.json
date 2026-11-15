@@ -48,16 +48,17 @@
   "permissions": [
     "clipboard",
     "serviceWorker",
-    "localStorage"
+    "localStorage",
+    "WebGL"
   ],
   "storageKeys": [],
-  "sizeBytes": 451231,
-  "sha256": "e510718073e8b0a65ab780486f81bca3d04d180da043c9e3848dfa58fd41a976",
+  "sizeBytes": 503272,
+  "sha256": "66b0fb39f042d6842d91ef65ea794ec4a234766c09ede8949d4dda01974f1d02",
   "csp": {
     "present": true,
     "directives": {
       "default-src": "'none'",
-      "script-src": "https://www.threads.net https://www.threads.com sha256×3",
+      "script-src": "https://www.threads.net https://www.threads.com sha256×4",
       "style-src": "'unsafe-inline'",
       "img-src": "'self' data: https:",
       "font-src": "https:",
